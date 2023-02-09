@@ -87,13 +87,18 @@ export default class CodeTool {
    */
   drawView() {
     const wrapper = document.createElement('div'),
-        textarea = document.createElement('textarea');
+      textarea = document.createElement('textarea');
 
     wrapper.classList.add(this.CSS.baseClass, this.CSS.wrapper);
     textarea.classList.add(this.CSS.textarea, this.CSS.input);
     textarea.textContent = this.data.code;
 
     textarea.placeholder = this.placeholder;
+
+    textarea.addEventListener('change', (e) => {
+      textarea.style.height = "100px";
+      textarea.style.height = e.target.scrollHeight + 'px';
+    });
 
     if (this.readOnly) {
       textarea.disabled = true;
@@ -208,7 +213,7 @@ export default class CodeTool {
    */
   static get pasteConfig() {
     return {
-      tags: [ 'pre' ],
+      tags: ['pre'],
     };
   }
 
