@@ -55,17 +55,6 @@ export default class CodeTool {
    * @param {boolean} options.readOnly - read only mode flag
    */
   constructor({ data, config, api, readOnly }) {
-    data.code = `npm run gh-pages",
-    "dev": "npm run start:dev",
-    "gh-pages": "gh-pages -d dist",
-    "i18n-remove": "pro i18n-remove --locale=zh-CN --write",
-    "postinstall": "umi g tmp",
-    "lint": "umi g tmp && npm run lint:js && npm run lint:style && npm run lint:prettier && npm run tsc",
-    "lint-staged": "lint-staged",
-    "lint-staged:js": "eslint --ext .js,.jsx,.ts,.tsx ",
-    "lint:fix": "eslint --fix --cache --ext .js,.jsx,.ts,.tsx --format=pretty ./src && npm run lint:style",
-    "lint:js":
-`
     this.api = api;
     this.readOnly = readOnly;
 
