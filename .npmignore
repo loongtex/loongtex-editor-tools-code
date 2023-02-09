@@ -6,3 +6,4 @@ src/
 .stylelintrc
 webpack.config.js
 yarn.lock
+index.html
