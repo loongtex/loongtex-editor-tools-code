@@ -11,6 +11,9 @@
     resize: none;
     padding: 40px;
 }
+.ce-code__inside:empty:before {
+    content: attr(data-placeholder);
+}
 .ce-code-svg-wrapper{
     position: absolute;
     top:calc( 6px + 0.4em);
