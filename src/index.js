@@ -31,7 +31,7 @@ export default class CodeTool {
   }
 
   /**
-   * Allow to press Enter inside the CodeTool textarea
+   * Allow to press Enter inside the CodeTool div
    *
    * @returns {boolean}
    * @public
@@ -64,12 +64,13 @@ export default class CodeTool {
       baseClass: this.api.styles.block,
       input: this.api.styles.input,
       wrapper: 'ce-code',
-      textarea: 'ce-code__textarea',
+      div: 'ce-code__inside',
+      svgWrapper:'ce-code-svg-wrapper',
     };
 
     this.nodes = {
       holder: null,
-      textarea: null,
+      div: null,
     };
 
     this.data = {
@@ -88,7 +89,6 @@ export default class CodeTool {
   drawView() {
     const SVG_NS = "http://www.w3.org/2000/svg";
     const wrapper = document.createElement('div'),
-      textarea = document.createElement('textarea'),
       inside = document.createElement('div'),
       svg = document.createElementNS(SVG_NS,"svg"),
       path = document.createElementNS(SVG_NS, "path"),
@@ -98,9 +98,12 @@ export default class CodeTool {
     wrapper.style.position = "relative";
 
     wrapper.classList.add(this.CSS.baseClass, this.CSS.wrapper);
-    textarea.classList.add(this.CSS.textarea, this.CSS.input);
-    inside.className = 'ce-code__inside';
-    svgWrapper.className = 'ce-code-svg-wrapper';
+    inside.classList.add(this.CSS.div, this.CSS.input);
+    svgWrapper.classList.add(this.CSS.svgWrapper);
+
+    inside.setAttribute("contenteditable", true);
+    inside.setAttribute("placeholder", this.placeholder);
+    inside.setAttribute("tabindex", 0);
     path.setAttribute("d","M11.804,1.33469C11.7321,0.588495,11.0987,0,10.3344,0L3.69087,0L3.54921,0.00679126C2.80302,0.0786704,2.21452,0.71212,2.21452,1.47635L2.214,2.217L1.47635,2.21725L1.33469,2.22404C0.588495,2.29592,0,2.92937,0,3.6936L0,10.3372L0.00679126,10.4788C0.0786704,11.225,0.71212,11.8135,1.47635,11.8135L8.11991,11.8135L8.26156,11.8067C9.00776,11.7348,9.59626,11.1014,9.59626,10.3372L9.596,9.596L10.3344,9.59626L10.4761,9.58946C11.2223,9.51758,11.8108,8.88414,11.8108,8.11991L11.8108,1.47635L11.804,1.33469ZM10.3343,0.959595L3.6907,0.959595C3.43233,0.959595,3.21088,1.15152,3.18136,1.40988L3.17397,1.47632L3.17383,2.21697L8.11974,2.21722C8.88396,2.21722,9.51741,2.80572,9.58929,3.55191L9.59608,3.69357L9.59583,8.63597L10.3343,8.6366C10.5926,8.6366,10.8141,8.44467,10.8436,8.18631L10.851,8.11988L10.851,1.47632C10.851,1.21796,10.6591,0.996503,10.4007,0.966976L10.3343,0.959595ZM8.11975,3.17688L1.47619,3.17688C1.21783,3.17688,0.996381,3.3688,0.966854,3.62717L0.959473,3.6936L0.959473,10.3372C0.959473,10.5955,1.1514,10.817,1.40976,10.8465L1.47619,10.8539L8.11975,10.8539C8.37812,10.8539,8.59957,10.662,8.6291,10.4036L8.63648,10.3372L8.63648,3.6936C8.63648,3.43524,8.44455,3.21379,8.18619,3.18426L8.11975,3.17688Z");
     path.setAttribute("fill", "595959");
     path.setAttribute("fill-rule", "evenodd");
@@ -108,15 +111,8 @@ export default class CodeTool {
     svg.setAttribute("height", 12);
     svg.setAttribute("viewBox","0 0 12 12");
 
-
-    textarea.textContent = this.data.code;
     inside.textContent = this.data.code;
-    textarea.placeholder = this.placeholder;
     span.textContent = 'Copy';
-
-    textarea.addEventListener('input', (e) => {
-      inside.textContent = e.target.value;
-    });
 
     wrapper.addEventListener("mouseenter",()=>{
       if(svgWrapper.style.opacity === '0' || !svgWrapper.style.opacity){
@@ -153,19 +149,19 @@ export default class CodeTool {
     })
 
     if (this.readOnly) {
-      textarea.disabled = true;
+     inside.setAttribute("contenteditable", false);
     }
     svg.appendChild(path);
     svgWrapper.appendChild(svg);
     svgWrapper.appendChild(span);
-    wrapper.appendChild(textarea);
     wrapper.appendChild(inside);
     wrapper.appendChild(svgWrapper);
 
     /**
      * Enable keydown handlers
      */
-    textarea.addEventListener('keydown', (event) => {
+    wrapper.addEventListener('keydown', (event) => {
+      console.log(event)
       switch (event.code) {
         case 'Tab':
           this.tabHandler(event);
@@ -173,7 +169,7 @@ export default class CodeTool {
       }
     });
 
-    this.nodes.textarea = textarea;
+    this.nodes.div = inside;
 
     return wrapper;
   }
@@ -191,13 +187,13 @@ export default class CodeTool {
   /**
    * Extract Tool's data from the view
    *
-   * @param {HTMLDivElement} codeWrapper - CodeTool's wrapper, containing textarea with code
+   * @param {HTMLDivElement} codeWrapper - CodeTool's wrapper, containing div with code
    * @returns {CodeData} - saved plugin code
    * @public
    */
   save(codeWrapper) {
     return {
-      code: codeWrapper.querySelector('textarea').value,
+      code: codeWrapper.querySelector('.ce-code__inside').textContent,
     };
   }
 
@@ -231,8 +227,8 @@ export default class CodeTool {
   set data(data) {
     this._data = data;
 
-    if (this.nodes.textarea) {
-      this.nodes.textarea.textContent = data.code;
+    if (this.nodes.div) {
+      this.nodes.div.textContent = data.code;
     }
   }
 
@@ -251,7 +247,7 @@ export default class CodeTool {
   }
 
   /**
-   * Default placeholder for CodeTool's textarea
+   * Default placeholder for CodeTool's div
    *
    * @public
    * @returns {string}
@@ -302,10 +298,10 @@ export default class CodeTool {
      */
     event.preventDefault();
 
-    const textarea = event.target;
+    const div = event.target;
     const isShiftPressed = event.shiftKey;
-    const caretPosition = textarea.selectionStart;
-    const value = textarea.value;
+    const caretPosition = div.selectionStart;
+    const value = div.textContent;
     const indentation = '  ';
 
     let newCaretPosition;
@@ -316,7 +312,7 @@ export default class CodeTool {
     if (!isShiftPressed) {
       newCaretPosition = caretPosition + indentation.length;
 
-      textarea.value = value.substring(0, caretPosition) + indentation + value.substring(caretPosition);
+      div.textContent = value.substring(0, caretPosition) + indentation + value.substring(caretPosition);
     } else {
       /**
        * For Shift+Tab pressing, remove an indentation from the start of line
@@ -331,13 +327,13 @@ export default class CodeTool {
       /**
        * Trim the first two chars from the start of line
        */
-      textarea.value = value.substring(0, currentLineStart) + value.substring(currentLineStart + indentation.length);
+      div.textContent = value.substring(0, currentLineStart) + value.substring(currentLineStart + indentation.length);
       newCaretPosition = caretPosition - indentation.length;
     }
 
     /**
      * Restore the caret
      */
-    textarea.setSelectionRange(newCaretPosition, newCaretPosition);
+    div.setSelectionRange(newCaretPosition, newCaretPosition);
   }
 }
