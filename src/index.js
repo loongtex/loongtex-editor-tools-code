@@ -137,7 +137,7 @@ export default class CodeTool {
 
     svgWrapper.addEventListener("click",()=>{
         const oInput = document.createElement('input');
-        oInput.value = this.data.code;
+        oInput.value = inside.textContent;
         document.body.appendChild(oInput);
         oInput.select();
         document.execCommand("Copy");
@@ -160,14 +160,13 @@ export default class CodeTool {
     /**
      * Enable keydown handlers
      */
-    wrapper.addEventListener('keydown', (event) => {
-      console.log(event)
-      switch (event.code) {
-        case 'Tab':
-          this.tabHandler(event);
-          break;
-      }
-    });
+    // inside.addEventListener('keydown', (event) => {
+    //   switch (event.code) {
+    //     case 'Tab':
+    //       this.tabHandler(event);
+    //       break;
+    //   }
+    // });
 
     this.nodes.div = inside;
 
