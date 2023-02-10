@@ -65,7 +65,7 @@ export default class CodeTool {
       input: this.api.styles.input,
       wrapper: 'ce-code',
       div: 'ce-code__inside',
-      svgWrapper:'ce-code-svg-wrapper',
+      svgWrapper: 'ce-code-svg-wrapper',
     };
 
     this.nodes = {
@@ -90,7 +90,8 @@ export default class CodeTool {
     const SVG_NS = "http://www.w3.org/2000/svg";
     const wrapper = document.createElement('div'),
       inside = document.createElement('div'),
-      svg = document.createElementNS(SVG_NS,"svg"),
+      outside = document.createElement('div'),
+      svg = document.createElementNS(SVG_NS, "svg"),
       path = document.createElementNS(SVG_NS, "path"),
       svgWrapper = document.createElement('div'),
       span = document.createElement('span');
@@ -99,64 +100,73 @@ export default class CodeTool {
 
     wrapper.classList.add(this.CSS.baseClass, this.CSS.wrapper);
     inside.classList.add(this.CSS.div, this.CSS.input);
+    outside.classList.add("ce-code__outside");
+
     svgWrapper.classList.add(this.CSS.svgWrapper);
 
     inside.setAttribute("contenteditable", true);
     inside.setAttribute("data-placeholder", this.placeholder);
-    inside.setAttribute("tabindex", 0);
-    path.setAttribute("d","M11.804,1.33469C11.7321,0.588495,11.0987,0,10.3344,0L3.69087,0L3.54921,0.00679126C2.80302,0.0786704,2.21452,0.71212,2.21452,1.47635L2.214,2.217L1.47635,2.21725L1.33469,2.22404C0.588495,2.29592,0,2.92937,0,3.6936L0,10.3372L0.00679126,10.4788C0.0786704,11.225,0.71212,11.8135,1.47635,11.8135L8.11991,11.8135L8.26156,11.8067C9.00776,11.7348,9.59626,11.1014,9.59626,10.3372L9.596,9.596L10.3344,9.59626L10.4761,9.58946C11.2223,9.51758,11.8108,8.88414,11.8108,8.11991L11.8108,1.47635L11.804,1.33469ZM10.3343,0.959595L3.6907,0.959595C3.43233,0.959595,3.21088,1.15152,3.18136,1.40988L3.17397,1.47632L3.17383,2.21697L8.11974,2.21722C8.88396,2.21722,9.51741,2.80572,9.58929,3.55191L9.59608,3.69357L9.59583,8.63597L10.3343,8.6366C10.5926,8.6366,10.8141,8.44467,10.8436,8.18631L10.851,8.11988L10.851,1.47632C10.851,1.21796,10.6591,0.996503,10.4007,0.966976L10.3343,0.959595ZM8.11975,3.17688L1.47619,3.17688C1.21783,3.17688,0.996381,3.3688,0.966854,3.62717L0.959473,3.6936L0.959473,10.3372C0.959473,10.5955,1.1514,10.817,1.40976,10.8465L1.47619,10.8539L8.11975,10.8539C8.37812,10.8539,8.59957,10.662,8.6291,10.4036L8.63648,10.3372L8.63648,3.6936C8.63648,3.43524,8.44455,3.21379,8.18619,3.18426L8.11975,3.17688Z");
+    path.setAttribute("d", "M11.804,1.33469C11.7321,0.588495,11.0987,0,10.3344,0L3.69087,0L3.54921,0.00679126C2.80302,0.0786704,2.21452,0.71212,2.21452,1.47635L2.214,2.217L1.47635,2.21725L1.33469,2.22404C0.588495,2.29592,0,2.92937,0,3.6936L0,10.3372L0.00679126,10.4788C0.0786704,11.225,0.71212,11.8135,1.47635,11.8135L8.11991,11.8135L8.26156,11.8067C9.00776,11.7348,9.59626,11.1014,9.59626,10.3372L9.596,9.596L10.3344,9.59626L10.4761,9.58946C11.2223,9.51758,11.8108,8.88414,11.8108,8.11991L11.8108,1.47635L11.804,1.33469ZM10.3343,0.959595L3.6907,0.959595C3.43233,0.959595,3.21088,1.15152,3.18136,1.40988L3.17397,1.47632L3.17383,2.21697L8.11974,2.21722C8.88396,2.21722,9.51741,2.80572,9.58929,3.55191L9.59608,3.69357L9.59583,8.63597L10.3343,8.6366C10.5926,8.6366,10.8141,8.44467,10.8436,8.18631L10.851,8.11988L10.851,1.47632C10.851,1.21796,10.6591,0.996503,10.4007,0.966976L10.3343,0.959595ZM8.11975,3.17688L1.47619,3.17688C1.21783,3.17688,0.996381,3.3688,0.966854,3.62717L0.959473,3.6936L0.959473,10.3372C0.959473,10.5955,1.1514,10.817,1.40976,10.8465L1.47619,10.8539L8.11975,10.8539C8.37812,10.8539,8.59957,10.662,8.6291,10.4036L8.63648,10.3372L8.63648,3.6936C8.63648,3.43524,8.44455,3.21379,8.18619,3.18426L8.11975,3.17688Z");
     path.setAttribute("fill", "595959");
     path.setAttribute("fill-rule", "evenodd");
     svg.setAttribute("width", 12);
     svg.setAttribute("height", 12);
-    svg.setAttribute("viewBox","0 0 12 12");
+    svg.setAttribute("viewBox", "0 0 12 12");
 
     inside.textContent = this.data.code;
     span.textContent = 'Copy';
 
-    wrapper.addEventListener("mouseenter",()=>{
-      if(svgWrapper.style.opacity === '0' || !svgWrapper.style.opacity){
-         svgWrapper.style.opacity = '1';
+    wrapper.addEventListener("mouseenter", () => {
+      if (svgWrapper.style.opacity === '0' || !svgWrapper.style.opacity) {
+        svgWrapper.style.opacity = '1';
       }
     })
 
-    wrapper.addEventListener("mouseleave", ()=>{
-      if(svgWrapper.style.opacity === '1'){
+    wrapper.addEventListener("mouseleave", () => {
+      if (svgWrapper.style.opacity === '1') {
         svgWrapper.style.opacity = '0';
       }
     })
 
-    svgWrapper.addEventListener("mouseenter",()=>{
-       svgWrapper.classList.add('active');
-        
+    svgWrapper.addEventListener("mouseenter", () => {
+      svgWrapper.classList.add('active');
+
     })
 
-    svgWrapper.addEventListener("mouseleave",()=>{
-       svgWrapper.classList.remove('active');
+    svgWrapper.addEventListener("mouseleave", () => {
+      svgWrapper.classList.remove('active');
     })
 
-    svgWrapper.addEventListener("click",()=>{
-        const oInput = document.createElement('input');
-        oInput.value = inside.textContent;
-        document.body.appendChild(oInput);
-        oInput.select();
-        document.execCommand("Copy");
-        oInput.className = 'oInput';
-        oInput.style.display = 'none';
-        svgWrapper.removeChild(span);
-        span.textContent = 'Copied';
-        svgWrapper.appendChild(span);
+    svgWrapper.addEventListener("click", () => {
+      const oInput = document.createElement('input');
+      oInput.value = inside.textContent;
+      document.body.appendChild(oInput);
+      oInput.select();
+      document.execCommand("Copy");
+      oInput.className = 'oInput';
+      oInput.style.display = 'none';
+      svgWrapper.removeChild(span);
+      span.textContent = 'Copied';
+      svgWrapper.appendChild(span);
     })
 
     if (this.readOnly) {
-     inside.setAttribute("contenteditable", false);
+      inside.setAttribute("contenteditable", false);
     }
     svg.appendChild(path);
     svgWrapper.appendChild(svg);
     svgWrapper.appendChild(span);
-    wrapper.appendChild(inside);
+    outside.appendChild(inside);
+    wrapper.appendChild(outside);
     wrapper.appendChild(svgWrapper);
-
+    inside.addEventListener("paste", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.textInit(e);
+      this.data = {
+        code: this.nodes.div.textContent,
+      }
+    });
     /**
      * Enable keydown handlers
      */
@@ -193,19 +203,6 @@ export default class CodeTool {
   save(codeWrapper) {
     return {
       code: codeWrapper.querySelector('.ce-code__inside').textContent,
-    };
-  }
-
-  /**
-   * onPaste callback fired from Editor`s core
-   *
-   * @param {PasteEvent} event - event with pasted content
-   */
-  onPaste(event) {
-    const content = event.detail.data;
-
-    this.data = {
-      code: content.textContent,
     };
   }
 
@@ -335,4 +332,44 @@ export default class CodeTool {
      */
     div.setSelectionRange(newCaretPosition, newCaretPosition);
   }
+  /**
+ * 复制粘贴处理
+ * @param e
+ */
+  textInit(e) {
+    var text = null;
+    
+    if(window.clipboardData && clipboardData.setData) {
+        // IE
+        text = window.clipboardData.getData('text');
+    } else {
+        text = (e.originalEvent || e).clipboardData.getData('text/plain') || prompt('在这里输入文本');
+    }
+    if (document.body.createTextRange) {    
+        if (document.selection) {
+            textRange = document.selection.createRange();
+        } else if (window.getSelection) {
+            sel = window.getSelection();
+            var range = sel.getRangeAt(0);
+            
+            // 创建临时元素，使得TextRange可以移动到正确的位置
+            var tempEl = document.createElement("span");
+            tempEl.innerHTML = "&#FEFF;";
+            range.deleteContents();
+            range.insertNode(tempEl);
+            textRange = document.body.createTextRange();
+            textRange.moveToElementText(tempEl);
+            tempEl.parentNode.removeChild(tempEl);
+        }
+        textRange.text = text;
+        textRange.collapse(false);
+        textRange.select();
+    } else {
+        // Chrome之类浏览器
+        document.execCommand("insertHtml", false, text);
+    }
+
+  }
+
 }
+
