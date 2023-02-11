@@ -79,6 +79,7 @@ export default class CodeTool {
 
     this.range = null;
     this.selection = null;
+    this.isEnterPress = false;
 
     this.nodes.holder = this.drawView();
   }
@@ -171,12 +172,15 @@ export default class CodeTool {
     });
     inside.addEventListener("input", () => {
       this.cursorHandler();
+      this.isEnterPress = false;
     })
 
     inside.addEventListener("keydown", (event) => {
       this.cursorHandler();
       if (event.code.toLocaleLowerCase() === 'enter') {
         this.keyPressHandler(event);
+      }else{
+        this.isEnterPress = false;
       }
     })
     /**
@@ -354,8 +358,8 @@ export default class CodeTool {
     if (!selection.rangeCount) return false
     selection.getRangeAt(0).insertNode(document.createTextNode(value));
     this.nodes.div.normalize();
-    var rangeStartOffset = range.startOffset || 0;
-    range.setStart(this.nodes.div.childNodes[0], rangeStartOffset +(value ==='\n'? 2 : value.length));
+    var rangeStartOffset = range.startOffset;
+    range.setStart(this.nodes.div.childNodes[0], rangeStartOffset +  value.length);
     range.collapse(true);
     selection.removeAllRanges();
     selection.addRange(range);
@@ -381,7 +385,9 @@ export default class CodeTool {
   }
 
   keyPressHandler(event) {
-    this.textInit(event, '\n');
+    event.preventDefault();
+    this.textInit(event, this.isEnterPress  ? '\n' : '\n\n');
+    this.isEnterPress = true;
   }
 
 
