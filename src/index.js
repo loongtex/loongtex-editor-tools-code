@@ -5,7 +5,6 @@ import './index.css';
 import { getLineStartPosition } from './utils/string';
 import { IconBrackets } from '@codexteam/icons';
 
-
 /**
  * CodeTool for Editor.js
  *
@@ -55,6 +54,7 @@ export default class CodeTool {
    * @param {boolean} options.readOnly - read only mode flag
    */
   constructor({ data, config, api, readOnly }) {
+    console.log(data)
     this.api = api;
     this.readOnly = readOnly;
 
@@ -76,6 +76,9 @@ export default class CodeTool {
     this.data = {
       code: data.code || '',
     };
+
+    this.range = null;
+    this.selection = null;
 
     this.nodes.holder = this.drawView();
   }
@@ -104,7 +107,8 @@ export default class CodeTool {
 
     svgWrapper.classList.add(this.CSS.svgWrapper);
 
-    inside.setAttribute("contenteditable", true);
+    inside.setAttribute("contenteditable", "true");
+    inside.setAttribute("spellcheck", false)
     inside.setAttribute("data-placeholder", this.placeholder);
     path.setAttribute("d", "M11.804,1.33469C11.7321,0.588495,11.0987,0,10.3344,0L3.69087,0L3.54921,0.00679126C2.80302,0.0786704,2.21452,0.71212,2.21452,1.47635L2.214,2.217L1.47635,2.21725L1.33469,2.22404C0.588495,2.29592,0,2.92937,0,3.6936L0,10.3372L0.00679126,10.4788C0.0786704,11.225,0.71212,11.8135,1.47635,11.8135L8.11991,11.8135L8.26156,11.8067C9.00776,11.7348,9.59626,11.1014,9.59626,10.3372L9.596,9.596L10.3344,9.59626L10.4761,9.58946C11.2223,9.51758,11.8108,8.88414,11.8108,8.11991L11.8108,1.47635L11.804,1.33469ZM10.3343,0.959595L3.6907,0.959595C3.43233,0.959595,3.21088,1.15152,3.18136,1.40988L3.17397,1.47632L3.17383,2.21697L8.11974,2.21722C8.88396,2.21722,9.51741,2.80572,9.58929,3.55191L9.59608,3.69357L9.59583,8.63597L10.3343,8.6366C10.5926,8.6366,10.8141,8.44467,10.8436,8.18631L10.851,8.11988L10.851,1.47632C10.851,1.21796,10.6591,0.996503,10.4007,0.966976L10.3343,0.959595ZM8.11975,3.17688L1.47619,3.17688C1.21783,3.17688,0.996381,3.3688,0.966854,3.62717L0.959473,3.6936L0.959473,10.3372C0.959473,10.5955,1.1514,10.817,1.40976,10.8465L1.47619,10.8539L8.11975,10.8539C8.37812,10.8539,8.59957,10.662,8.6291,10.4036L8.63648,10.3372L8.63648,3.6936C8.63648,3.43524,8.44455,3.21379,8.18619,3.18426L8.11975,3.17688Z");
     path.setAttribute("fill", "595959");
@@ -159,14 +163,22 @@ export default class CodeTool {
     outside.appendChild(inside);
     wrapper.appendChild(outside);
     wrapper.appendChild(svgWrapper);
-    inside.addEventListener("paste", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      this.textInit(e);
+    inside.addEventListener("paste", (event) => {
+      this.pasteHandler(event);
       this.data = {
         code: this.nodes.div.textContent,
       }
     });
+    inside.addEventListener("input", () => {
+      this.cursorHandler();
+    })
+
+    inside.addEventListener("keydown", (event) => {
+      this.cursorHandler();
+      if (event.code.toLocaleLowerCase() === 'enter') {
+        this.keyPressHandler(event);
+      }
+    })
     /**
      * Enable keydown handlers
      */
@@ -336,40 +348,43 @@ export default class CodeTool {
  * 复制粘贴处理
  * @param e
  */
-  textInit(e) {
-    var text = null;
-    
-    if(window.clipboardData && clipboardData.setData) {
-        // IE
-        text = window.clipboardData.getData('text');
-    } else {
-        text = (e.originalEvent || e).clipboardData.getData('text/plain') || prompt('在这里输入文本');
-    }
-    if (document.body.createTextRange) {    
-        if (document.selection) {
-            textRange = document.selection.createRange();
-        } else if (window.getSelection) {
-            sel = window.getSelection();
-            var range = sel.getRangeAt(0);
-            
-            // 创建临时元素，使得TextRange可以移动到正确的位置
-            var tempEl = document.createElement("span");
-            tempEl.innerHTML = "&#FEFF;";
-            range.deleteContents();
-            range.insertNode(tempEl);
-            textRange = document.body.createTextRange();
-            textRange.moveToElementText(tempEl);
-            tempEl.parentNode.removeChild(tempEl);
-        }
-        textRange.text = text;
-        textRange.collapse(false);
-        textRange.select();
-    } else {
-        // Chrome之类浏览器
-        document.execCommand("insertHtml", false, text);
-    }
-
+  textInit(event, value) {
+    const selection = this.selection;
+    const range = this.range;
+    if (!selection.rangeCount) return false
+    selection.getRangeAt(0).insertNode(document.createTextNode(value));
+    this.nodes.div.normalize();
+    var rangeStartOffset = range.startOffset || 0;
+    range.setStart(this.nodes.div.childNodes[0], rangeStartOffset +(value ==='\n'? 2 : value.length));
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    this.range = range;
+    this.selection = selection;
+    event.preventDefault();
+    event.stopPropagation();
   }
 
-}
+  pasteHandler(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    let paste = (event.clipboardData || window.clipboardData).getData('text');
+    this.textInit(event, paste)
+  }
 
+  /**
+   * 获取光标的位置
+   */
+  cursorHandler() {
+    this.selection = window.getSelection();
+    this.range = this.selection.getRangeAt(0);
+  }
+
+  keyPressHandler(event) {
+    this.textInit(event, '\n');
+  }
+
+
+
+
+}

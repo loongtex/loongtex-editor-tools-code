@@ -6,9 +6,10 @@
     border:none;
     box-shadow: none;
     padding: 40px;
-    white-space: pre-wrap;
+    white-space: pre;
     border: none;
-    overflow-x: auto;
+    min-width: 100%;
+    user-select:text;
     
 }
 .ce-code__inside:empty:before {
