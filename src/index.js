@@ -83,7 +83,7 @@ export default class CodeTool {
       language: data.language || '纯文本',
     };
 
-    this.languages = config.languages ||  ['纯文本','Css','Python','Git','JavaScript','Go','C','C++','Rust','Java'];
+    this.languages = config.languages || ['纯文本', 'Css', 'Python', 'Git', 'JavaScript', 'Go', 'C', 'C++', 'Rust', 'Java'];
 
     this.range = null;
     this.selection = null;
@@ -236,6 +236,11 @@ export default class CodeTool {
       } else {
         this.nodes.div.textContent = this.data.code;
       }
+
+      event.preventDefault();
+    })
+
+    languageOptions.addEventListener('mouseleave', () => {
       if (languageOptions.style.opacity === '1') {
         languageOptions.style.opacity = '0';
         languageOptions.style.pointerEvents = 'none';
@@ -245,11 +250,6 @@ export default class CodeTool {
         languageOptions.style.pointerEvents = 'all';
         svg.style.transform = 'rotate(-180deg)';
       }
-      event.preventDefault();
-    })
-
-    languageOptions.addEventListener('mouseleave',()=>{
-      languageMenu.contains(languageOptions) && languageMenu.removeChild(languageOptions);
     })
 
     languageMenu.appendChild(languageItem);
@@ -283,11 +283,11 @@ export default class CodeTool {
 
     codePlusLibraryMenu.appendChild(selectLangueMenu);
 
-    codePlusLibraryMenu.addEventListener('mouseleave',()=>{
-      if(document.body.contains(codePlusLibraryMenu)){
-        document.body.removeChild(codePlusLibraryMenu);
-      }
-    })
+    // codePlusLibraryMenu.addEventListener('mouseleave', () => {
+    //   if (document.body.contains(codePlusLibraryMenu)) {
+    //     document.body.removeChild(codePlusLibraryMenu);
+    //   }
+    // })
 
     this.nodes.codePlusLibraryMenu = codePlusLibraryMenu;
 
