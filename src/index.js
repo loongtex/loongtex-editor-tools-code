@@ -248,6 +248,10 @@ export default class CodeTool {
       event.preventDefault();
     })
 
+    languageOptions.addEventListener('mouseleave',()=>{
+      languageMenu.contains(languageOptions) && languageMenu.removeChild(languageOptions);
+    })
+
     languageMenu.appendChild(languageItem);
     languageMenu.appendChild(languageOptions);
 
@@ -278,6 +282,12 @@ export default class CodeTool {
     })
 
     codePlusLibraryMenu.appendChild(selectLangueMenu);
+
+    codePlusLibraryMenu.addEventListener('mouseleave',()=>{
+      if(document.body.contains(codePlusLibraryMenu)){
+        document.body.removeChild(codePlusLibraryMenu);
+      }
+    })
 
     this.nodes.codePlusLibraryMenu = codePlusLibraryMenu;
 
