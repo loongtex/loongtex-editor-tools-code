@@ -30,6 +30,7 @@
     "webpack-cli": "^3.2.3"
   },
   "dependencies": {
-    "@codexteam/icons": "^0.0.5"
+    "@codexteam/icons": "^0.0.5",
+    "prismjs": "^1.29.0"
   }
 }
