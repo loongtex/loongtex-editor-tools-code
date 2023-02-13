@@ -341,7 +341,7 @@ export default class CodeTool {
   save(codeWrapper) {
     return {
       code: codeWrapper.querySelector('.code-plus__inside').textContent,
-      language: codeWrapper.querySelector('.code-plus-language-show-area').textContent,
+      language: codeWrapper.querySelector('.code-plus-text').textContent,
     };
   }
 
