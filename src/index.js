@@ -20,7 +20,7 @@ import Prism from 'prismjs'
 /**
  * Code Tool for the Editor.js allows to include code examples in your articles.
  */
-export default class CodePlus {
+export default class CodeTool {
   /**
    * Notify core that read-only mode is supported
    *
