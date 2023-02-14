@@ -131,9 +131,9 @@ export default class CodePlus {
     wrapper.appendChild(languageMenu);
 
     wrapper.appendChild(outside);
-    inside.addEventListener("paste", () => this.insidePaste);
-    inside.addEventListener("input", () => this.insideInput);
-    inside.addEventListener("keydown", () => this.insideKeyDown);
+    inside.addEventListener("paste", (event) => this.insidePaste(event));
+    inside.addEventListener("input", (event) => this.insideInput(event));
+    inside.addEventListener("keydown", (event) => this.insideKeyDown(event));
 
     wrapper.addEventListener('mouseenter', () => this.wrapperMouseEnter())
     wrapper.addEventListener('mouseleave', () => this.wrapperMouseLeave())
