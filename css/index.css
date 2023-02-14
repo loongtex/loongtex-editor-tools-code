@@ -25,7 +25,7 @@
   overflow-x: auto;
   background: #f5f5f5;
   border: 1px solid #f5f5f5;
-  padding: 0 12px 24px;
+  padding: 0 12px 32px;
   -moz-box-sizing: border-box;
        box-sizing: border-box;
 }
@@ -33,10 +33,9 @@
 .code-plus-svg-wrapper {
   display: grid;
   grid-template-columns: auto auto;
-  -webkit-column-gap: 8px;
-     -moz-column-gap: 8px;
-          column-gap: 8px;
-  padding: 0 8px;
+  -webkit-column-gap: 4px;
+     -moz-column-gap: 4px;
+          column-gap: 4px;
   -webkit-justify-content: space-between;
      -moz-box-pack: justify;
       -ms-flex-pack: justify;
@@ -46,25 +45,14 @@
       -ms-flex-align: center;
           align-items: center;
   border-radius: 4px;
-  font-size: 14px;
-  color: #595959;
   -moz-box-sizing: border-box;
        box-sizing: border-box;
   cursor: pointer;
 }
 
 .code-plus-language {
-  padding: 6px 8px 0;
-  display: -webkit-flex;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-justify-content: flex-end;
-     -moz-box-pack: end;
-      -ms-flex-pack: end;
-          justify-content: flex-end;
-  color: #2C2C2C;
-  font-size: 12px;
+  height: 32px;
+  padding: 0 8px;
   background-color: #f5f5f5;
 }
 
@@ -81,30 +69,25 @@
   background-color: #ebebeb;
 }
 
-.code-plus-library-menu {
-  padding-bottom: 7px;
-  position: absolute;
-  z-index: 2023;
-}
 .code-plus-library-menu .code-plus-select-language-menu {
   border-radius: 6px;
   color: rgba(0, 0, 0, 0.87);
-  -webkit-transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  -o-transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  -moz-transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.05), 0px 8px 24px rgba(0, 0, 0, 0.02);
   padding: 4px;
   display: -webkit-flex;
   display: -moz-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-flex-wrap: nowrap;
-      -ms-flex-wrap: nowrap;
-          flex-wrap: nowrap;
-  font-size: 14px;
-  color: #2C2C2C;
-  background-color: #fff;
+  -webkit-justify-content: space-between;
+     -moz-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  font-size: 12px;
+  color: rgba(55, 53, 47, 0.65);
+  -webkit-transition: opacity 300ms ease-in 0s;
+  -o-transition: opacity 300ms ease-in 0s;
+  -moz-transition: opacity 300ms ease-in 0s;
+  transition: opacity 300ms ease-in 0s;
+  opacity: 0;
 }
 .code-plus-library-menu .code-plus-select-language-menu .code-plus-copy,
 .code-plus-library-menu .code-plus-select-language-menu .code-plus-language-item {
@@ -112,7 +95,7 @@
   display: -moz-box;
   display: -ms-flexbox;
   display: flex;
-  padding: 1px 4px 1px 2px;
+  padding: 4px 6px;
   border-radius: 4px;
   cursor: pointer;
   -webkit-user-select: none;
@@ -120,8 +103,7 @@
       -ms-user-select: none;
           user-select: none;
 }
-.code-plus-library-menu .code-plus-select-language-menu .code-plus-copy:hover,
-.code-plus-library-menu .code-plus-select-language-menu .code-plus-language-item:hover {
+.code-plus-library-menu .code-plus-select-language-menu .code-plus-copy {
   background-color: #EAEAEA;
 }
 .code-plus-library-menu .code-plus-select-language-menu .code-plus-line {
@@ -149,6 +131,9 @@
   -moz-transition: all 297ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -moz-transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   transition: all 297ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   transition: all 297ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -webkit-transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -moz-transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -o-transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+.code-plus-library-menu .code-plus-select-language-menu .code-plus-language-menu .code-plus-language-item:hover {
+  background-color: #EAEAEA;
 }
 .code-plus-library-menu .code-plus-select-language-menu .code-plus-language-menu .code-plus-language-options {
   position: absolute;

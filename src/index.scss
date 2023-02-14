@@ -22,30 +22,24 @@
     overflow-x: auto;
     background: #f5f5f5;
     border: 1px solid #f5f5f5;
-    padding: 0 12px 24px;
+    padding: 0 12px 32px;
     box-sizing: border-box;
 }
 
 .code-plus-svg-wrapper {
     display: grid;
     grid-template-columns: auto auto;
-    column-gap: 8px;
-    padding: 0 8px;
+    column-gap: 4px;
     justify-content: space-between;
     align-items: center;
     border-radius: 4px;
-    font-size: 14px;
-    color: #595959;
     box-sizing: border-box;
     cursor: pointer;
 }
 
 .code-plus-language {
-    padding: 6px 8px 0;
-    display: flex;
-    justify-content: flex-end;
-    color: #2C2C2C;
-    font-size: 12px;
+    height: 32px;
+    padding: 0 8px;
     background-color: #f5f5f5;
 }
 
@@ -61,34 +55,32 @@
 }
 
 .code-plus-library-menu {
-    padding-bottom: 7px;
-    position: absolute;
-    z-index: 2023;
     .code-plus-select-language-menu {
         border-radius: 6px;
         color: rgba(0, 0, 0, 0.87);
-        transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-        box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.05), 0px 8px 24px rgba(0, 0, 0, 0.02);
         padding: 4px;
         display: flex;
-        flex-wrap: nowrap;
-
-        font-size: 14px;
-        color: #2C2C2C;
-        background-color: #fff;
+        justify-content: space-between;
+        font-size: 12px;
+        color: rgba(55, 53, 47, 0.65);
+        transition: opacity 300ms ease-in 0s;
+        opacity: 0;
 
         .code-plus-copy,
         .code-plus-language-item {
             display: flex;
-            padding: 1px 4px 1px 2px;
+            padding: 4px 6px;
             border-radius: 4px;
             cursor: pointer;
             user-select: none;
 
-            &:hover {
-                background-color: #EAEAEA;
-            }
+           
         }
+         
+        .code-plus-copy{
+            background-color: #EAEAEA;
+        }
+
 
         .code-plus-line {
             width: 1px;
@@ -105,6 +97,9 @@
 
                 .code-plus-language-svg {
                     transition: all 297ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+                }
+                &:hover {
+                    background-color: #EAEAEA;
                 }
 
             }

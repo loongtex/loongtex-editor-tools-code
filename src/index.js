@@ -78,8 +78,8 @@ export default class CodePlus {
       holder: null,
       div: null,
       languageText: null,
-      optionText: null,
-      codePlusLibraryMenu: null
+      codePlusLibraryMenu: null,
+      languageMenu: null
     };
 
     this.data = {
@@ -94,7 +94,6 @@ export default class CodePlus {
     this.isEnterPress = false;
 
     this.nodes.holder = this.drawView();
-    this.makeLanguageMenu();
   }
 
   /**
@@ -106,9 +105,7 @@ export default class CodePlus {
   drawView() {
     const wrapper = this.make('div', [this.CSS.baseClass, this.CSS.wrapper]),
       inside = this.make('div', [this.CSS.div, this.CSS.input]),
-      outside = this.make('div', [this.CSS.divOutside]),
-      languageShow = this.make('div', [this.CSS.language]),
-      languageText = this.make('div', 'code-plus-text');
+      outside = this.make('div', [this.CSS.divOutside]);
 
     wrapper.style.position = "relative";
     inside.setAttribute("contenteditable", "true");
@@ -121,28 +118,27 @@ export default class CodePlus {
       inside.textContent = this.data.code;
     }
 
-    languageText.textContent = this.data.language;
 
 
     if (this.readOnly) {
       inside.setAttribute("contenteditable", false);
     }
 
+    const languageMenu = this.makeLanguageMenu();
+
     outside.appendChild(inside);
 
-    languageShow.appendChild(languageText);
-    wrapper.appendChild(languageShow);
+    wrapper.appendChild(languageMenu);
 
     wrapper.appendChild(outside);
-    inside.addEventListener("paste", this.insidePaste);
-    inside.addEventListener("input", this.insideInput)
+    inside.addEventListener("paste", () => this.insidePaste);
+    inside.addEventListener("input", () => this.insideInput);
+    inside.addEventListener("keydown", () => this.insideKeyDown);
 
-    inside.addEventListener("keydown", this.insideKeyDown)
-
-    languageText.addEventListener('mouseenter', this.languageTextMouseEnter)
+    wrapper.addEventListener('mouseenter', () => this.wrapperMouseEnter())
+    wrapper.addEventListener('mouseleave', () => this.wrapperMouseLeave())
 
     this.nodes.div = inside;
-    this.nodes.languageText = languageText;
 
 
     return wrapper;
@@ -151,7 +147,7 @@ export default class CodePlus {
   makeLanguageMenu() {
     const SVG_NS = "http://www.w3.org/2000/svg";
 
-    const codePlusLibraryMenu = this.make('div', 'code-plus-library-menu'),
+    const codePlusLibraryMenu = this.make('div', ['code-plus-library-menu', this.CSS.language]),
       selectLangueMenu = this.make('div', 'code-plus-select-language-menu'),
       languageMenu = this.make('div', 'code-plus-language-menu'),
       languageItem = this.make('div', 'code-plus-language-item'),
@@ -171,7 +167,7 @@ export default class CodePlus {
 
 
     path.setAttribute("d", "M14.566 7.434a.8.8 0 010 1.132l-4 4a.8.8 0 01-1.132 0l-4-4a.8.8 0 111.132-1.132L10 10.87l3.434-3.435a.8.8 0 011.132 0z");
-    path.setAttribute("fill", "#6E6E6E");
+    path.setAttribute("fill", "rgba(55, 53, 47, 0.65)");
     path.setAttribute("fill-rule", "evenodd");
     path.setAttribute("clip-rule", "evenodd");
     svg.setAttribute("width", 16);
@@ -187,7 +183,7 @@ export default class CodePlus {
     svgCopy.setAttribute("viewBox", "0 0 12 12");
 
     languageText.textContent = this.data.language;
-    this.nodes.optionText = languageText;
+    this.nodes.languageText = languageText;
     languageItem.appendChild(languageText);
     svg.appendChild(path);
     languageItem.appendChild(svg);
@@ -206,7 +202,7 @@ export default class CodePlus {
       if (text && text !== '纯文本') {
         const html = this.generateHtml(text);
         if (html) {
-          this.nodes.optionText.textContent = text;
+          this.nodes.languageText.textContent = text;
           this.nodes.div.innerHTML = html;
         }
       } else {
@@ -266,6 +262,7 @@ export default class CodePlus {
     // })
 
     this.nodes.codePlusLibraryMenu = codePlusLibraryMenu;
+    this.nodes.languageMenu = selectLangueMenu;
 
     languageItem.addEventListener('click', () => {
       if (languageOptions.style.opacity === '1') {
@@ -278,6 +275,8 @@ export default class CodePlus {
         svg.style.transform = 'rotate(-180deg)';
       }
     })
+
+    return codePlusLibraryMenu;
 
   }
 
@@ -296,21 +295,21 @@ export default class CodePlus {
 
     return el;
   }
-  
-  makeSvg(tagName, d, width, height,viewBox, fill, className = null ){
-    let el = document.createElementNS('http://www.w3.org/2000/svg',tagName);
+
+  makeSvg(tagName, d, width, height, viewBox, fill, className = null) {
+    let el = document.createElementNS('http://www.w3.org/2000/svg', tagName);
     let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d',d);
-    path.setAttribute('fill',fill);
+    path.setAttribute('d', d);
+    path.setAttribute('fill', fill);
     path.setAttribute("fill-rule", "evenodd");
     path.setAttribute("clip-rule", "evenodd");
     svg.setAttribute("width", width);
     svg.setAttribute("height", height);
     svg.setAttribute("viewBox", viewBox);
-    if(className){
+    if (className) {
       svg.classList.add(className);
     }
-    
+
     return el
 
   }
@@ -334,7 +333,7 @@ export default class CodePlus {
   save(codeWrapper) {
     return {
       code: codeWrapper.querySelector('.code-plus__inside').textContent,
-      language: codeWrapper.querySelector('.code-plus-text').textContent,
+      language: codeWrapper.querySelector('.code-plus-language-item').textContent,
     };
   }
 
@@ -545,5 +544,15 @@ export default class CodePlus {
     const libraryHeight = this.nodes.codePlusLibraryMenu.offsetHeight;
     this.nodes.codePlusLibraryMenu.style.top = `${(top - 7 - libraryHeight + scrollTop)}px`;
     this.nodes.codePlusLibraryMenu.style.right = `${bodyWidth - right}px`;
+  }
+  wrapperMouseEnter() {
+    if((this.nodes.languageMenu.style.opacity === '' || this.nodes.languageMenu.style.opacity === '0') ){
+      this.nodes.languageMenu.style.opacity = '1';
+    }
+  }
+  wrapperMouseLeave() {
+    if((this.nodes.languageMenu.style.opacity==='1') ){
+      this.nodes.languageMenu.style.opacity = '0';
+    }
   }
 }
