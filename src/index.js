@@ -113,12 +113,12 @@ export default class CodeTool {
     inside.setAttribute("contenteditable", "true");
     inside.setAttribute("spellcheck", false)
     inside.setAttribute("data-placeholder", this.placeholder);
-
-    if (this.data.language && this.data.language != '纯文本') {
+    if (this.data.language && this.data.language !== '纯文本') {
       inside.innerHTML = this.generateHtml(this.data.language.toLocaleLowerCase())
     } else {
       inside.textContent = this.data.code;
     }
+
 
 
 
@@ -218,7 +218,9 @@ export default class CodeTool {
           this.nodes.div.innerHTML = html;
         }
       } else {
+        this.nodes.languageText.textContent = text;
         this.nodes.div.textContent = this.nodes.div.textContent;
+    
       }
 
       if(document.body.contains(this.nodes.languageOutside)){
@@ -502,7 +504,7 @@ export default class CodeTool {
   }
 
   generateHtml(text) {
-    return Prism.highlight(this.nodes.div.textContent, Prism.languages[text.toLocaleLowerCase()], text.toLocaleLowerCase())
+    return Prism.highlight( this.nodes.div ? this.nodes.div.textContent : this.data.code , Prism.languages[text.toLocaleLowerCase()], text.toLocaleLowerCase())
   }
 
   insidePaste(event) {
