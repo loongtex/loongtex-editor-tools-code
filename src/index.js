@@ -71,7 +71,7 @@ export default class CodePlus {
       div: 'code-plus__inside',
       svgWrapper: 'code-plus-svg-wrapper',
       divOutside: 'code-plus__outside',
-      language: 'code-plus-language'
+      language: 'code-plus-language',
     };
 
     this.nodes = {
@@ -79,7 +79,9 @@ export default class CodePlus {
       div: null,
       languageText: null,
       codePlusLibraryMenu: null,
-      languageMenu: null
+      languageMenu: null,
+      languageOutside: null,
+      languageOptions: null
     };
 
     this.data = {
@@ -135,8 +137,8 @@ export default class CodePlus {
     inside.addEventListener("input", (event) => this.insideInput(event));
     inside.addEventListener("keydown", (event) => this.insideKeyDown(event));
 
-    wrapper.addEventListener('mouseenter', () => this.wrapperMouseEnter())
-    wrapper.addEventListener('mouseleave', () => this.wrapperMouseLeave())
+    wrapper.addEventListener('mouseenter', (event) => this.wrapperMouseEnter(event))
+    wrapper.addEventListener('mouseleave', (event) => this.wrapperMouseLeave(event))
 
     this.nodes.div = inside;
 
@@ -152,6 +154,7 @@ export default class CodePlus {
       languageMenu = this.make('div', 'code-plus-language-menu'),
       languageItem = this.make('div', 'code-plus-language-item'),
       languageText = this.make('span'),
+      languageOutside = this.make('div', 'code-plus-language-outside'),
       languageOptions = this.make('div', 'code-plus-language-options'),
       line = this.make('div', 'code-plus-line'),
       copy = this.make('div', 'code-plus-copy'),
@@ -162,6 +165,15 @@ export default class CodePlus {
       pathCopy = document.createElementNS(SVG_NS, "path"),
       svgWrapper = this.make('div', [this.CSS.svgWrapper]),
       spanCopy = document.createElement('span');
+
+    languageOutside.appendChild(languageOptions)
+    this.nodes.languageOutside = languageOutside;
+    this.nodes.languageOptions = languageOptions;
+    languageOutside.addEventListener('click',()=>{
+      if(document.body.contains(languageOutside)){
+        document.body.removeChild(languageOutside);
+      }
+    })
 
     spanCopy.textContent = 'Copy';
 
@@ -206,26 +218,21 @@ export default class CodePlus {
           this.nodes.div.innerHTML = html;
         }
       } else {
-        this.nodes.div.textContent = this.data.code;
+        this.nodes.div.textContent = this.nodes.div.textContent;
+      }
+
+      if(document.body.contains(this.nodes.languageOutside)){
+        document.body.removeChild(this.nodes.languageOutside);
       }
 
       event.preventDefault();
+      event.stopPropagation();
     })
 
-    languageOptions.addEventListener('mouseleave', () => {
-      if (languageOptions.style.opacity === '1') {
-        languageOptions.style.opacity = '0';
-        languageOptions.style.pointerEvents = 'none';
-        svg.style.transform = 'rotate(0deg)';
-      } else {
-        languageOptions.style.opacity = '1';
-        languageOptions.style.pointerEvents = 'all';
-        svg.style.transform = 'rotate(-180deg)';
-      }
-    })
+ 
 
     languageMenu.appendChild(languageItem);
-    languageMenu.appendChild(languageOptions);
+    languageMenu.addEventListener('click', (event) => this.languageMenuClick(event))
 
     selectLangueMenu.appendChild(languageMenu);
 
@@ -263,18 +270,6 @@ export default class CodePlus {
 
     this.nodes.codePlusLibraryMenu = codePlusLibraryMenu;
     this.nodes.languageMenu = selectLangueMenu;
-
-    languageItem.addEventListener('click', () => {
-      if (languageOptions.style.opacity === '1') {
-        languageOptions.style.opacity = '0';
-        languageOptions.style.pointerEvents = 'none';
-        svg.style.transform = 'rotate(0deg)';
-      } else {
-        languageOptions.style.opacity = '1';
-        languageOptions.style.pointerEvents = 'all';
-        svg.style.transform = 'rotate(-180deg)';
-      }
-    })
 
     return codePlusLibraryMenu;
 
@@ -507,7 +502,7 @@ export default class CodePlus {
   }
 
   generateHtml(text) {
-    return Prism.highlight(this.data.code, Prism.languages[text.toLocaleLowerCase()], text.toLocaleLowerCase())
+    return Prism.highlight(this.nodes.div.textContent, Prism.languages[text.toLocaleLowerCase()], text.toLocaleLowerCase())
   }
 
   insidePaste(event) {
@@ -531,27 +526,25 @@ export default class CodePlus {
     }
   }
 
-  languageTextMouseEnter(event) {
-    const { top, right } = event.target.getBoundingClientRect();
-    const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-    const bodyWidth = document.body.clientWidth || document.documentElement.width;
-    if (!this.nodes.codePlusLibraryMenu) {
-      this.makeLanguageMenu();
+  languageMenuClick(event) {
+    const { bottom, left } = event.target.getBoundingClientRect();
+    if (!document.body.contains(this.nodes.languageOutside)) {
+      document.body.appendChild(this.nodes.languageOutside);
     }
-    if (!document.body.contains(this.nodes.codePlusLibraryMenu)) {
-      document.body.appendChild(this.nodes.codePlusLibraryMenu);
-    }
-    const libraryHeight = this.nodes.codePlusLibraryMenu.offsetHeight;
-    this.nodes.codePlusLibraryMenu.style.top = `${(top - 7 - libraryHeight + scrollTop)}px`;
-    this.nodes.codePlusLibraryMenu.style.right = `${bodyWidth - right}px`;
+    this.nodes.languageOptions.style.top = `${(bottom)}px`;
+    this.nodes.languageOptions.style.left = `${left}px`;
   }
-  wrapperMouseEnter() {
-    if((this.nodes.languageMenu.style.opacity === '' || this.nodes.languageMenu.style.opacity === '0') ){
+  wrapperMouseEnter(event) {
+    event.preventDefault();
+    event.stopPropagation()
+    if ((this.nodes.languageMenu.style.opacity === '' || this.nodes.languageMenu.style.opacity === '0')) {
       this.nodes.languageMenu.style.opacity = '1';
     }
   }
-  wrapperMouseLeave() {
-    if((this.nodes.languageMenu.style.opacity==='1') ){
+  wrapperMouseLeave(event) {
+    event.preventDefault();
+    event.stopPropagation()
+    if ((this.nodes.languageMenu.style.opacity === '1' && !document.body.contains(this.nodes.languageOutside))) {
       this.nodes.languageMenu.style.opacity = '0';
     }
   }

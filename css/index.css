@@ -135,10 +135,20 @@
 .code-plus-library-menu .code-plus-select-language-menu .code-plus-language-menu .code-plus-language-item:hover {
   background-color: #EAEAEA;
 }
-.code-plus-library-menu .code-plus-select-language-menu .code-plus-language-menu .code-plus-language-options {
+
+.code-plus-language-outside {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2023;
+  overflow: hidden;
+}
+.code-plus-language-outside .code-plus-language-options {
   position: absolute;
-  top: 18px;
-  right: -2px;
   background-color: #fff;
   box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.16);
   border-radius: 4px;
@@ -148,8 +158,6 @@
   margin-top: 5px;
   padding-bottom: 10px;
   padding-right: 4px;
-  opacity: 0;
-  pointer-events: none;
   -webkit-transition: all 297ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -webkit-transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   transition: all 297ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -webkit-transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   -o-transition: all 297ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -o-transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
@@ -158,20 +166,20 @@
   transition: all 297ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -webkit-transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -moz-transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -o-transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   /* 整个滚动条 */
 }
-.code-plus-library-menu .code-plus-select-language-menu .code-plus-language-menu .code-plus-language-options::-webkit-scrollbar {
+.code-plus-language-outside .code-plus-language-options::-webkit-scrollbar {
   /* 对应纵向滚动条的宽度 */
   width: 8px;
   /* 对应横向滚动条的宽度 */
   height: 8px;
 }
-.code-plus-library-menu .code-plus-select-language-menu .code-plus-language-menu .code-plus-language-options::-webkit-scrollbar-thumb {
+.code-plus-language-outside .code-plus-language-options::-webkit-scrollbar-thumb {
   background-color: #cfcfcf;
   border-radius: 4px;
 }
-.code-plus-library-menu .code-plus-select-language-menu .code-plus-language-menu .code-plus-language-options::-webkit-scrollbar-track {
+.code-plus-language-outside .code-plus-language-options::-webkit-scrollbar-track {
   background-color: transparent;
 }
-.code-plus-library-menu .code-plus-select-language-menu .code-plus-language-menu .code-plus-language-options .code-plus-language-option {
+.code-plus-language-outside .code-plus-language-options .code-plus-language-option {
   cursor: pointer;
   padding: 0 15px;
   height: 30px;
@@ -186,6 +194,6 @@
           align-items: center;
   font-size: 14px;
 }
-.code-plus-library-menu .code-plus-select-language-menu .code-plus-language-menu .code-plus-language-options .code-plus-language-option:hover {
+.code-plus-language-outside .code-plus-language-options .code-plus-language-option:hover {
   background-color: #EAEAEA;
 }
