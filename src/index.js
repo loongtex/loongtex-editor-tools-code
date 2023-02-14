@@ -20,7 +20,7 @@ import Prism from 'prismjs'
 /**
  * Code Tool for the Editor.js allows to include code examples in your articles.
  */
-export default class CodeTool {
+export default class CodePlus {
   /**
    * Notify core that read-only mode is supported
    *
@@ -38,6 +38,10 @@ export default class CodeTool {
    */
   static get enableLineBreaks() {
     return true;
+  }
+
+  get defaultLanguages() {
+    return ['纯文本', 'Css', 'Python', 'Git', 'JavaScript', 'Go', 'C', 'C++', 'Rust', 'Java']
   }
 
   /**
@@ -83,7 +87,7 @@ export default class CodeTool {
       language: data.language || '纯文本',
     };
 
-    this.languages = config.languages || ['纯文本', 'Css', 'Python', 'Git', 'JavaScript', 'Go', 'C', 'C++', 'Rust', 'Java'];
+    this.languages = config.languages || this.defaultLanguages();
 
     this.range = null;
     this.selection = null;
@@ -130,40 +134,12 @@ export default class CodeTool {
     wrapper.appendChild(languageShow);
 
     wrapper.appendChild(outside);
-    inside.addEventListener("paste", (event) => {
-      this.pasteHandler(event);
-      this.data = {
-        code: this.nodes.div.textContent,
-      }
-    });
-    inside.addEventListener("input", () => {
-      this.cursorHandler();
-      this.isEnterPress = false;
-    })
+    inside.addEventListener("paste", this.insidePaste);
+    inside.addEventListener("input", this.insideInput)
 
-    inside.addEventListener("keydown", (event) => {
-      this.cursorHandler();
-      if (event.code.toLocaleLowerCase() === 'enter') {
-        this.keyPressHandler(event);
-      } else {
-        this.isEnterPress = false;
-      }
-    })
+    inside.addEventListener("keydown", this.insideKeyDown)
 
-    languageText.addEventListener('mouseenter', (event) => {
-      const { top, right } = event.target.getBoundingClientRect();
-      const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-      const bodyWidth = document.body.clientWidth || document.documentElement.width;
-      if (!this.nodes.codePlusLibraryMenu) {
-        this.makeLanguageMenu();
-      }
-      if (!document.body.contains(this.nodes.codePlusLibraryMenu)) {
-        document.body.appendChild(this.nodes.codePlusLibraryMenu);
-      }
-      const libraryHeight = this.nodes.codePlusLibraryMenu.offsetHeight;
-      this.nodes.codePlusLibraryMenu.style.top = `${(top - 7 - libraryHeight + scrollTop)}px`;
-      this.nodes.codePlusLibraryMenu.style.right = `${bodyWidth - right}px`;
-    })
+    languageText.addEventListener('mouseenter', this.languageTextMouseEnter)
 
     this.nodes.div = inside;
     this.nodes.languageText = languageText;
@@ -320,7 +296,24 @@ export default class CodeTool {
 
     return el;
   }
+  
+  makeSvg(tagName, d, width, height,viewBox, fill, className = null ){
+    let el = document.createElementNS('http://www.w3.org/2000/svg',tagName);
+    let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d',d);
+    path.setAttribute('fill',fill);
+    path.setAttribute("fill-rule", "evenodd");
+    path.setAttribute("clip-rule", "evenodd");
+    svg.setAttribute("width", width);
+    svg.setAttribute("height", height);
+    svg.setAttribute("viewBox", viewBox);
+    if(className){
+      svg.classList.add(className);
+    }
+    
+    return el
 
+  }
   /**
    * Return Tool's view
    *
@@ -516,5 +509,41 @@ export default class CodeTool {
 
   generateHtml(text) {
     return Prism.highlight(this.data.code, Prism.languages[text.toLocaleLowerCase()], text.toLocaleLowerCase())
+  }
+
+  insidePaste(event) {
+    this.pasteHandler(event);
+    this.data = {
+      code: this.nodes.div.textContent,
+    }
+  }
+
+  insideInput() {
+    this.cursorHandler();
+    this.isEnterPress = false;
+  }
+
+  insideKeyDown(event) {
+    this.cursorHandler();
+    if (event.code.toLocaleLowerCase() === 'enter') {
+      this.keyPressHandler(event);
+    } else {
+      this.isEnterPress = false;
+    }
+  }
+
+  languageTextMouseEnter(event) {
+    const { top, right } = event.target.getBoundingClientRect();
+    const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+    const bodyWidth = document.body.clientWidth || document.documentElement.width;
+    if (!this.nodes.codePlusLibraryMenu) {
+      this.makeLanguageMenu();
+    }
+    if (!document.body.contains(this.nodes.codePlusLibraryMenu)) {
+      document.body.appendChild(this.nodes.codePlusLibraryMenu);
+    }
+    const libraryHeight = this.nodes.codePlusLibraryMenu.offsetHeight;
+    this.nodes.codePlusLibraryMenu.style.top = `${(top - 7 - libraryHeight + scrollTop)}px`;
+    this.nodes.codePlusLibraryMenu.style.right = `${bodyWidth - right}px`;
   }
 }
