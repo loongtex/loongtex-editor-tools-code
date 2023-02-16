@@ -20,17 +20,15 @@
 .code-plus__outside {
     width: 100%;
     overflow-x: auto;
-    background: #f5f5f5;
-    border: 1px solid #f5f5f5;
+    background: #fafafa;
     padding: 0 12px 32px;
     box-sizing: border-box;
 }
 
 .code-plus-svg-wrapper {
-    display: grid;
-    grid-template-columns: auto auto;
-    column-gap: 4px;
+    display: flex;
     justify-content: space-between;
+    height: 24px;
     align-items: center;
     border-radius: 4px;
     box-sizing: border-box;
@@ -40,7 +38,7 @@
 .code-plus-language {
     height: 32px;
     padding: 0 8px;
-    background-color: #f5f5f5;
+    background-color: #fafafa;
 }
 
 .code-plus-text {
@@ -64,28 +62,19 @@
         font-size: 12px;
         color: rgba(55, 53, 47, 0.65);
         transition: opacity 300ms ease-in 0s;
-        opacity: 0;
+        opacity:0;
 
         .code-plus-copy,
         .code-plus-language-item {
             display: flex;
-            padding: 4px 6px;
             border-radius: 4px;
             cursor: pointer;
             user-select: none;
-
-           
-        }
-         
-        .code-plus-copy{
-            background-color: #EAEAEA;
         }
 
-
-        .code-plus-line {
-            width: 1px;
+        .code-plus-copy {
+            padding: 0px 6px 0 4px;
             background-color: #EAEAEA;
-            margin: 0 6px;
         }
 
         .code-plus-language-menu {
@@ -94,10 +83,13 @@
             .code-plus-language-item {
                 display: flex;
                 align-items: center;
+                padding: 4px 6px;
+
 
                 .code-plus-language-svg {
                     transition: all 297ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
                 }
+
                 &:hover {
                     background-color: #EAEAEA;
                 }
@@ -109,7 +101,7 @@
     }
 }
 
-.code-plus-language-outside{
+.code-plus-language-outside {
     position: fixed;
     top: 0;
     left: 0;
@@ -119,6 +111,7 @@
     height: 100vh;
     z-index: 2023;
     overflow: hidden;
+
     .code-plus-language-options {
         position: absolute;
         background-color: #fff;

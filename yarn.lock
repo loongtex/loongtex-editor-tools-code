@@ -701,10 +701,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@codexteam/icons@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.npmjs.org/@codexteam/icons/-/icons-0.0.5.tgz"
-  integrity sha512-s6H2KXhLz2rgbMZSkRm8dsMJvyUNZsEjxobBEg9ztdrb1B2H3pEzY6iTwI4XUPJWJ3c3qRKwV4TrO3J5jUdoQA==
+"@codexteam/icons@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@codexteam/icons/-/icons-0.2.0.tgz#749e8fdd560d332bd06e7b798cdb53e41d3e88f3"
+  integrity sha512-v6ICziqFGHv9Pzcn5Pib799AHBxsD/0s3QoRC6y/ZUHGtogq4HeV4Nzd8C2wTWrbYoZE2BcksFCMEM1xTZEEXA==
 
 "@types/json-schema@^7.0.4":
   version "7.0.4"

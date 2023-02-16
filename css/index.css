@@ -23,23 +23,22 @@
 .code-plus__outside {
   width: 100%;
   overflow-x: auto;
-  background: #f5f5f5;
-  border: 1px solid #f5f5f5;
+  background: #fafafa;
   padding: 0 12px 32px;
   -moz-box-sizing: border-box;
        box-sizing: border-box;
 }
 
 .code-plus-svg-wrapper {
-  display: grid;
-  grid-template-columns: auto auto;
-  -webkit-column-gap: 4px;
-     -moz-column-gap: 4px;
-          column-gap: 4px;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
   -webkit-justify-content: space-between;
      -moz-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
+  height: 24px;
   -webkit-align-items: center;
      -moz-box-align: center;
       -ms-flex-align: center;
@@ -53,7 +52,7 @@
 .code-plus-language {
   height: 32px;
   padding: 0 8px;
-  background-color: #f5f5f5;
+  background-color: #fafafa;
 }
 
 .code-plus-text {
@@ -95,7 +94,6 @@
   display: -moz-box;
   display: -ms-flexbox;
   display: flex;
-  padding: 4px 6px;
   border-radius: 4px;
   cursor: pointer;
   -webkit-user-select: none;
@@ -104,12 +102,8 @@
           user-select: none;
 }
 .code-plus-library-menu .code-plus-select-language-menu .code-plus-copy {
+  padding: 0px 6px 0 4px;
   background-color: #EAEAEA;
-}
-.code-plus-library-menu .code-plus-select-language-menu .code-plus-line {
-  width: 1px;
-  background-color: #EAEAEA;
-  margin: 0 6px;
 }
 .code-plus-library-menu .code-plus-select-language-menu .code-plus-language-menu {
   position: relative;
@@ -123,6 +117,7 @@
      -moz-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  padding: 4px 6px;
 }
 .code-plus-library-menu .code-plus-select-language-menu .code-plus-language-menu .code-plus-language-item .code-plus-language-svg {
   -webkit-transition: all 297ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -webkit-transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
