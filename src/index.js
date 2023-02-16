@@ -530,12 +530,18 @@ export default class CodeTool {
     if ((this.nodes.languageMenu.style.opacity === '' || this.nodes.languageMenu.style.opacity === '0')) {
       this.nodes.languageMenu.style.opacity = '1';
     }
+    if(this.nodes.languageText.textContent !== '纯文本'){
+        this.nodes.div.textContent = this.nodes.div.textContent;
+    }
   }
   wrapperMouseLeave(event) {
     event.preventDefault();
     event.stopPropagation()
     if ((this.nodes.languageMenu.style.opacity === '1' && !document.body.contains(this.nodes.languageOutside))) {
       this.nodes.languageMenu.style.opacity = '0';
+    }
+    if(this.nodes.languageText.textContent !== '纯文本'){
+      this.nodes.div.innerHTML = this.generateHtml(this.nodes.languageText.textContent);
     }
   }
 }
