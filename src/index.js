@@ -3,10 +3,12 @@
  */
 import '../css/index.css';
 import '../css/prism.css'
-import { getLineStartPosition } from './utils/string';
+import { _getFrontOffset, selection, _getRealDomAndOffset } from './utils/string';
 import { IconBrackets } from '@codexteam/icons';
 import Prism from 'prismjs'
 import { IconCopy } from '@codexteam/icons';
+const getFrontOffset = _getFrontOffset();
+const getRealDomAndOffset = _getRealDomAndOffset()
 /**
  * CodeTool for Editor.js
  *
@@ -96,6 +98,8 @@ export default class CodeTool {
     this.selection = null;
     this.isEnterPress = false;
 
+    this.isInput = true;
+
     this.nodes.holder = this.drawView();
   }
 
@@ -134,10 +138,11 @@ export default class CodeTool {
     wrapper.appendChild(languageMenu);
 
     wrapper.appendChild(outside);
-    inside.addEventListener("paste", (event) => this.insidePaste(event));
-    inside.addEventListener("input", (event) => this.insideInput(event));
-    inside.addEventListener("keydown", (event) => this.insideKeyDown(event));
-
+    inside.addEventListener("paste", (event) => this.insideInput(event, 'paste'));
+    inside.addEventListener("input", (event) => this.insideInput(event, 'input'));
+    inside.addEventListener("keydown", (event) => this.insideInput(event, 'keydown'));
+    inside.addEventListener('compositionstart',(event)=>this.handlerComposition(event,'input'));
+    inside.addEventListener('compositionend',(event)=>this.handlerComposition(event,'input'))
     wrapper.addEventListener('mouseenter', (event) => this.wrapperMouseEnter(event))
     wrapper.addEventListener('mouseleave', (event) => this.wrapperMouseLeave(event))
 
@@ -163,7 +168,7 @@ export default class CodeTool {
       svgWrapper = this.make('div', [this.CSS.svgWrapper]),
       spanCopy = document.createElement('span');
 
-      svgWrapper.innerHTML = IconCopy;
+    svgWrapper.innerHTML = IconCopy;
 
     languageOutside.appendChild(languageOptions)
     this.nodes.languageOutside = languageOutside;
@@ -251,12 +256,6 @@ export default class CodeTool {
     })
 
     codePlusLibraryMenu.appendChild(selectLangueMenu);
-
-    // codePlusLibraryMenu.addEventListener('mouseleave', () => {
-    //   if (document.body.contains(codePlusLibraryMenu)) {
-    //     document.body.removeChild(codePlusLibraryMenu);
-    //   }
-    // })
 
     this.nodes.codePlusLibraryMenu = codePlusLibraryMenu;
     this.nodes.languageMenu = selectLangueMenu;
@@ -402,15 +401,12 @@ export default class CodeTool {
     selection.getRangeAt(0).insertNode(document.createTextNode(value));
     this.nodes.div.normalize();
     var rangeStartOffset = range.startOffset;
-    range.setStart(this.nodes.div.childNodes[0], rangeStartOffset + value.length);
-    range.collapse(true);
-    selection.removeAllRanges();
-    selection.addRange(range);
-    this.range = range;
-    this.selection = selection;
+    this.positioningHandle(selection, range, this.nodes.div.childNodes[0], rangeStartOffset + value.length);
     event.preventDefault();
     event.stopPropagation();
   }
+
+
 
   pasteHandler(event) {
     event.preventDefault();
@@ -427,93 +423,63 @@ export default class CodeTool {
     this.range = this.selection.getRangeAt(0);
   }
 
-  keyPressHandler(event) {
-    event.preventDefault();
-    // console.log( JSON.stringify(event.target.innerText).replace(/^\"|\"$/g,''));
-    this.textInit(event, this.isEnterPress ? '\n' : '\n\n');
-    this.isEnterPress = true;
-  }
-
-  /**
-   * Handles Tab key pressing (adds/removes indentations)
-   *
-   * @private
-   * @param {KeyboardEvent} event - keydown
-   * @returns {void}
-   */
-  tabHandler(event) {
-    /**
-     * Prevent editor.js tab handler
-     */
-    event.stopPropagation();
-
-    /**
-     * Prevent native tab behaviour
-     */
-    event.preventDefault();
-
-    const div = event.target;
-    const isShiftPressed = event.shiftKey;
-    const caretPosition = div.selectionStart;
-    const value = div.textContent;
-    const indentation = '  ';
-
-    let newCaretPosition;
-
-    /**
-     * For Tab pressing, just add an indentation to the caret position
-     */
-    if (!isShiftPressed) {
-      newCaretPosition = caretPosition + indentation.length;
-
-      div.textContent = value.substring(0, caretPosition) + indentation + value.substring(caretPosition);
-    } else {
-      /**
-       * For Shift+Tab pressing, remove an indentation from the start of line
-       */
-      const currentLineStart = getLineStartPosition(value, caretPosition);
-      const firstLineChars = value.substr(currentLineStart, indentation.length);
-
-      if (firstLineChars !== indentation) {
-        return;
-      }
-
-      /**
-       * Trim the first two chars from the start of line
-       */
-      div.textContent = value.substring(0, currentLineStart) + value.substring(currentLineStart + indentation.length);
-      newCaretPosition = caretPosition - indentation.length;
+  positioningHandle(selection, range, dom, len) {
+    if (len === 0) {
+      len = range.startOffset;
     }
-
-    /**
-     * Restore the caret
-     */
-    div.setSelectionRange(newCaretPosition, newCaretPosition);
+    range.setStart(dom, len);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    this.range = range;
+    this.selection = selection;
   }
+
+  // keyPressHandler(event) {
+  //   event.preventDefault();
+  //   this.textInit(event, this.isEnterPress ? '\n' : '\n\n');
+  //   this.isEnterPress = true;
+  // }
+
 
   generateHtml(text) {
-    return Prism.highlight(this.nodes.div ? this.nodes.div.textContent : this.data.code, Prism.languages[text.toLocaleLowerCase()], text.toLocaleLowerCase())
+    return  Prism.highlight(this.nodes.div ? this.nodes.div.textContent : this.data.code, Prism.languages[text.toLocaleLowerCase()], text.toLocaleLowerCase())
   }
 
-  insidePaste(event) {
-    this.pasteHandler(event);
-    this.data = {
-      code: this.nodes.div.textContent,
+  handlerComposition(event,type){
+    this.isInput = !event.isTrusted;
+    if(this.isInput && event.data){
+      this.insideInput(event,type);
     }
   }
 
-  insideInput() {
-    this.cursorHandler();
-    this.isEnterPress = false;
-  }
-
-  insideKeyDown(event) {
-    this.cursorHandler();
-    if (event.code.toLocaleLowerCase() === 'enter') {
-      this.keyPressHandler(event);
-    } else {
-      this.isEnterPress = false;
+  insideInput(event, type) {
+    if(!this.isInput) return
+    const endContainer = selection.getEndContainer();
+    let inset = ''
+    if (type === 'keydown' && event.keyCode !== 9) {
+      return
     }
+
+    if (type === 'paste') {
+      event.preventDefault();
+      event.stopPropagation();
+      const clipboard = event.clipboardData || window.clipboardData
+      if (clipboard) {
+        selection.deleteContents()
+        inset = clipboard.getData("text/plain").toString().replace(/\r\n/g, '\n')
+      } else {
+        alert('Paste is not supported, please enter it manually!')
+        return
+      }
+    }
+    getFrontOffset(this.nodes.div, endContainer, inset, (totalOffset, textContext) => {
+      const realContent = Prism.highlight(textContext, Prism.languages[this.data.language.toLocaleLowerCase()], this.data.language.toLocaleLowerCase());
+      this.nodes.div.innerHTML = realContent;
+      getRealDomAndOffset(this.nodes.div, totalOffset, (el, i) => {
+        selection.setCursorOffset(el, i)
+      })
+    })
   }
 
   languageMenuClick(event) {
@@ -530,18 +496,12 @@ export default class CodeTool {
     if ((this.nodes.languageMenu.style.opacity === '' || this.nodes.languageMenu.style.opacity === '0')) {
       this.nodes.languageMenu.style.opacity = '1';
     }
-    if(this.nodes.languageText.textContent !== '纯文本'){
-        this.nodes.div.textContent = this.nodes.div.textContent;
-    }
   }
   wrapperMouseLeave(event) {
     event.preventDefault();
     event.stopPropagation()
     if ((this.nodes.languageMenu.style.opacity === '1' && !document.body.contains(this.nodes.languageOutside))) {
       this.nodes.languageMenu.style.opacity = '0';
-    }
-    if(this.nodes.languageText.textContent !== '纯文本'){
-      this.nodes.div.innerHTML = this.generateHtml(this.nodes.languageText.textContent);
     }
   }
 }
