@@ -1,6 +1,6 @@
 {
   "name": "loongtex-code",
-  "version": "2.8.23",
+  "version": "2.8.24",
   "keywords": [
     "codex editor",
     "code",
@@ -14,8 +14,8 @@
   "main": "./dist/bundle.js",
   "scripts": {
     "build": "webpack --mode production",
-    "prebuild":"npm version patch",
-    "postbuild":"npm publish",
+    "prebuild": "npm version patch",
+    "postbuild": "npm publish",
     "build:dev": "webpack --mode development --watch"
   },
   "author": {
