@@ -141,8 +141,8 @@ export default class CodeTool {
     inside.addEventListener("paste", (event) => this.insideInput(event, 'paste'));
     inside.addEventListener("input", (event) => this.insideInput(event, 'input'));
     inside.addEventListener("keydown", (event) => this.insideInput(event, 'keydown'));
-    inside.addEventListener('compositionstart',(event)=>this.handlerComposition(event,'input'));
-    inside.addEventListener('compositionend',(event)=>this.handlerComposition(event,'input'))
+    inside.addEventListener('compositionstart', (event) => this.handlerComposition(event, 'input'));
+    inside.addEventListener('compositionend', (event) => this.handlerComposition(event, 'input'))
     wrapper.addEventListener('mouseenter', (event) => this.wrapperMouseEnter(event))
     wrapper.addEventListener('mouseleave', (event) => this.wrapperMouseLeave(event))
 
@@ -443,18 +443,18 @@ export default class CodeTool {
 
 
   generateHtml(text) {
-    return  Prism.highlight(this.nodes.div ? this.nodes.div.textContent : this.data.code, Prism.languages[text.toLocaleLowerCase()], text.toLocaleLowerCase())
+    return Prism.highlight(this.nodes.div ? this.nodes.div.textContent : this.data.code, Prism.languages[text.toLocaleLowerCase()], text.toLocaleLowerCase())
   }
 
-  handlerComposition(event,type){
+  handlerComposition(event, type) {
     this.isInput = !event.isTrusted;
-    if(this.isInput && event.data){
-      this.insideInput(event,type);
+    if (this.isInput && event.data) {
+      this.insideInput(event, type);
     }
   }
 
   insideInput(event, type) {
-    if(!this.isInput) return
+    if (!this.isInput) return
     const endContainer = selection.getEndContainer();
     let inset = ''
     if (type === 'keydown' && event.keyCode !== 9) {
@@ -474,7 +474,12 @@ export default class CodeTool {
       }
     }
     getFrontOffset(this.nodes.div, endContainer, inset, (totalOffset, textContext) => {
-      const realContent = Prism.highlight(textContext, Prism.languages[this.data.language.toLocaleLowerCase()], this.data.language.toLocaleLowerCase());
+      let realContent = ''
+      if (this.data.language === '纯文本' || this.nodes.languageText.textContent === '纯文本') {
+          realContent = textContext
+      } else {
+        realContent = Prism.highlight(textContext, Prism.languages[this.data.language.toLocaleLowerCase()], this.data.language.toLocaleLowerCase());
+      }
       this.nodes.div.innerHTML = realContent;
       getRealDomAndOffset(this.nodes.div, totalOffset, (el, i) => {
         selection.setCursorOffset(el, i)
