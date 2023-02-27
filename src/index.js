@@ -479,11 +479,11 @@ export default class CodeTool {
       } else {
        const realContent = Prism.highlight(textContext, Prism.languages[this.data.language.toLocaleLowerCase()], this.data.language.toLocaleLowerCase());
        this.nodes.div.innerHTML = realContent;
-       getRealDomAndOffset(this.nodes.div, totalOffset, (el, i) => {
-         selection.setCursorOffset(el, i)
-       })
+
       }
-     
+      getRealDomAndOffset(this.nodes.div, totalOffset, (el, i) => {
+        selection.setCursorOffset(el, i)
+      })
     })
   }
 
