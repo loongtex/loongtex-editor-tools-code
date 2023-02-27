@@ -474,16 +474,16 @@ export default class CodeTool {
       }
     }
     getFrontOffset(this.nodes.div, endContainer, inset, (totalOffset, textContext) => {
-      let realContent = ''
       if (this.data.language === '纯文本' || this.nodes.languageText.textContent === '纯文本') {
-          realContent = textContext
+          this.nodes.div.textContent = textContext;
       } else {
-        realContent = Prism.highlight(textContext, Prism.languages[this.data.language.toLocaleLowerCase()], this.data.language.toLocaleLowerCase());
+       const realContent = Prism.highlight(textContext, Prism.languages[this.data.language.toLocaleLowerCase()], this.data.language.toLocaleLowerCase());
+       this.nodes.div.innerHTML = realContent;
+       getRealDomAndOffset(this.nodes.div, totalOffset, (el, i) => {
+         selection.setCursorOffset(el, i)
+       })
       }
-      this.nodes.div.innerHTML = realContent;
-      getRealDomAndOffset(this.nodes.div, totalOffset, (el, i) => {
-        selection.setCursorOffset(el, i)
-      })
+     
     })
   }
 
