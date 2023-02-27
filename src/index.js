@@ -474,7 +474,7 @@ export default class CodeTool {
       }
     }
     getFrontOffset(this.nodes.div, endContainer, inset, (totalOffset, textContext) => {
-      if (this.data.language === '纯文本' || this.nodes.languageText.textContent === '纯文本') {
+      if (this.nodes.languageText.textContent === '纯文本') {
           this.nodes.div.textContent = textContext;
       } else {
        const realContent = Prism.highlight(textContext, Prism.languages[this.data.language.toLocaleLowerCase()], this.data.language.toLocaleLowerCase());
