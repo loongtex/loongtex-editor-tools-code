@@ -142,6 +142,12 @@
      -moz-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  -webkit-transition: background-color ease 0.3s;
+  -o-transition: background-color ease 0.3s;
+  -moz-transition: background-color ease 0.3s;
+  transition: background-color ease 0.3s;
+}
+.code-plus-library-menu .code-plus-select-language-menu .code-plus-copy:hover {
   background-color: #EAEAEA;
 }
 .code-plus-library-menu .code-plus-select-language-menu .code-plus-copy-info {

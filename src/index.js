@@ -158,18 +158,22 @@ export default class CodeTool {
       svgWrapper = this.make('div', [this.CSS.svgWrapper]);
 
     svgWrapper.innerHTML = copysvg;
-    svgWrapper.addEventListener('mouseenter', () => {
-      if (copyInfo.classList.contains('hidden')) {
+
+    let type = 'mouse'
+    copy.addEventListener('mouseenter', (ev) => {
+      if (copyInfo.classList.contains('hidden') && type === 'mouse') {
         copyInfo.classList.remove('hidden');
         copyInfo.classList.add('visible');
       }
     })
 
-    svgWrapper.addEventListener('mouseleave', () => {
+    copy.addEventListener('mouseleave', () => {
       if (copyInfo.classList.contains('visible')) {
         copyInfo.classList.remove('visible');
         copyInfo.classList.add('hidden')
       }
+
+      type = 'mouse';
     })
 
 
@@ -189,7 +193,6 @@ export default class CodeTool {
     path.setAttribute("d", "M14.566 7.434a.8.8 0 010 1.132l-4 4a.8.8 0 01-1.132 0l-4-4a.8.8 0 111.132-1.132L10 10.87l3.434-3.435a.8.8 0 011.132 0z");
     path.setAttribute("fill", "rgba(55, 53, 47, 0.65)");
     path.setAttribute("fill-rule", "evenodd");
-    path.setAttribute("clip-rule", "evenodd");
     svg.setAttribute("width", 16);
     svg.setAttribute("height", 16);
     svg.setAttribute("viewBox", "0 0 20 20");
@@ -251,6 +254,7 @@ export default class CodeTool {
 
       if (bool) {
         bool = false;
+        type = 'click';
         const oInput = document.createElement('input');
         oInput.value = this.nodes.div.textContent;
         document.body.appendChild(oInput);
@@ -260,15 +264,23 @@ export default class CodeTool {
         oInput.style.display = 'none';
         document.body.removeChild(oInput);
 
+
+
         svgWrapper.innerHTML = successcopy;
         copyInfo.textContent = '复制成功';
 
+        if (copyInfo.classList.contains('hidden') && type === 'click') {
+          copyInfo.classList.remove('hidden');
+          copyInfo.classList.add('visible');
+        }
 
-        setTimeout(() => {
+
+        var timer = setTimeout(() => {
           if (copyInfo.classList.contains('visible')) {
+            console.log('>>>>>>>>>>>>>>>>>')
             copyInfo.classList.remove('visible');
             copyInfo.classList.add('hidden');
-            copyInfo.textContent = '点击复制';
+            clearTimeout(timer);
           }
 
           svgWrapper.innerHTML = copysvg;
@@ -277,6 +289,12 @@ export default class CodeTool {
         }, 1000)
       }
 
+    })
+
+    copyInfo.addEventListener('transitionend', (ev) => {
+      if(ev.target.classList.contains('hidden')){
+        copyInfo.textContent = '点击复制';
+      }
     })
 
     codePlusLibraryMenu.appendChild(selectLangueMenu);
