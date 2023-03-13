@@ -31,12 +31,17 @@
 
 .code-plus-svg-wrapper {
     display: flex;
-    justify-content: space-between;
-    height: 24px;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
     align-items: center;
     border-radius: 4px;
     box-sizing: border-box;
     cursor: pointer;
+
+    path {
+        stroke: none !important;
+    }
 }
 
 .code-plus-language {
@@ -48,14 +53,16 @@
     border-top-left-radius: 4px;
 }
 
-.ce-block--selected{
-    .code-plus-language{
+.ce-block--selected {
+    .code-plus-language {
         background-color: inherit;
     }
-    .code-plus__outside{
+
+    .code-plus__outside {
         background-color: inherit;
     }
-    .operator{
+
+    .operator {
         background: transparent;
     }
 }
@@ -74,14 +81,12 @@
 .code-plus-library-menu {
     .code-plus-select-language-menu {
         border-radius: 6px;
-        color: rgba(0, 0, 0, 0.87);
         padding: 4px;
         display: flex;
         justify-content: space-between;
-        font-size: 12px;
-        color: rgba(55, 53, 47, 0.65);
         transition: opacity 300ms ease-in 0s;
-        opacity:0;
+        opacity: 0;
+        position: relative;
 
         .code-plus-copy,
         .code-plus-language-item {
@@ -92,8 +97,58 @@
         }
 
         .code-plus-copy {
-            padding: 0px 6px 0 4px;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background-color: #EAEAEA;
+        }
+
+        .code-plus-copy-info {
+            margin: 0em 0.75em 0em 0em;
+            box-shadow: 0 0 6px -1px rgb(140 146 163 / 50%);
+            width: 72px;
+            background-color: #ffffff;
+            position: absolute;
+            padding: 0.833em 1em;
+            font-weight: normal;
+            font-style: normal;
+            color: rgba(0, 0, 0, 0.8);
+            border-radius: 0.2857rem;
+            opacity: 0;
+            transition: opacity ease 0.3s;
+            top: 0;
+            right: 40px;
+            box-sizing: border-box;
+            font-size: 12px;
+            pointer-events: none;
+
+            &.hidden {
+                opacity: 0;
+            }
+
+            &.visible {
+                opacity: 1;
+            }
+
+
+            &::before {
+                top: 50%;
+                right: -0.325em;
+                bottom: auto;
+                left: auto;
+                margin-top: -0.325em;
+                position: absolute;
+                content: '';
+                width: 0.75em;
+                height: 0.75em;
+                background: #ffffff;
+                -webkit-transform: rotate(45deg);
+                transform: rotate(45deg);
+                z-index: 2;
+            }
         }
 
         .code-plus-language-menu {
@@ -103,6 +158,8 @@
                 display: flex;
                 align-items: center;
                 padding: 4px 6px;
+                color: rgba(0, 0, 0, 0.87);
+                font-size: 12px;
 
 
                 .code-plus-language-svg {

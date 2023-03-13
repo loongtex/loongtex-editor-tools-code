@@ -6,23 +6,10 @@ import '../css/prism.css'
 import { _getFrontOffset, selection, _getRealDomAndOffset } from './utils/string';
 import { IconBrackets } from '@codexteam/icons';
 import Prism from 'prismjs'
-import { IconCopy } from '@codexteam/icons';
 const getFrontOffset = _getFrontOffset();
-const getRealDomAndOffset = _getRealDomAndOffset()
-/**
- * CodeTool for Editor.js
- *
- * @author CodeX (team@ifmo.su)
- * @copyright CodeX 2018
- * @license MIT
- * @version 2.0.0
- */
-
-/* global PasteEvent */
-
-/**
- * Code Tool for the Editor.js allows to include code examples in your articles.
- */
+const getRealDomAndOffset = _getRealDomAndOffset();
+import copysvg from '../svg/copy.svg';
+import successcopy from '../svg/deal.svg';
 export default class CodeTool {
   /**
    * Notify core that read-only mode is supported
@@ -163,12 +150,30 @@ export default class CodeTool {
       languageOutside = this.make('div', 'code-plus-language-outside'),
       languageOptions = this.make('div', 'code-plus-language-options'),
       copy = this.make('div', 'code-plus-copy'),
+      copyInfo = this.make('div', ['code-plus-copy-info', 'hidden']),
       svg = document.createElementNS(SVG_NS, "svg"),
       path = document.createElementNS(SVG_NS, "path"),
-      svgWrapper = this.make('div', [this.CSS.svgWrapper]),
-      spanCopy = document.createElement('span');
 
-    svgWrapper.innerHTML = IconCopy;
+
+      svgWrapper = this.make('div', [this.CSS.svgWrapper]);
+
+    svgWrapper.innerHTML = copysvg;
+    svgWrapper.addEventListener('mouseenter', () => {
+      if (copyInfo.classList.contains('hidden')) {
+        copyInfo.classList.remove('hidden');
+        copyInfo.classList.add('visible');
+      }
+    })
+
+    svgWrapper.addEventListener('mouseleave', () => {
+      if (copyInfo.classList.contains('visible')) {
+        copyInfo.classList.remove('visible');
+        copyInfo.classList.add('hidden')
+      }
+    })
+
+
+    copyInfo.textContent = '点击复制'
 
     languageOutside.appendChild(languageOptions)
     this.nodes.languageOutside = languageOutside;
@@ -179,7 +184,6 @@ export default class CodeTool {
       }
     })
 
-    spanCopy.textContent = 'Copy';
 
 
     path.setAttribute("d", "M14.566 7.434a.8.8 0 010 1.132l-4 4a.8.8 0 01-1.132 0l-4-4a.8.8 0 111.132-1.132L10 10.87l3.434-3.435a.8.8 0 011.132 0z");
@@ -236,23 +240,43 @@ export default class CodeTool {
 
     selectLangueMenu.appendChild(languageMenu);
 
-    svgWrapper.appendChild(spanCopy);
     copy.appendChild(svgWrapper);
 
 
     selectLangueMenu.appendChild(copy);
+    selectLangueMenu.appendChild(copyInfo)
 
+    let bool = true;
     copy.addEventListener("click", () => {
-      const oInput = document.createElement('input');
-      oInput.value = this.nodes.div.textContent;
-      document.body.appendChild(oInput);
-      oInput.select();
-      document.execCommand("Copy");
-      oInput.className = 'oInput';
-      oInput.style.display = 'none';
-      svgWrapper.removeChild(spanCopy);
-      spanCopy.textContent = 'Copied';
-      svgWrapper.appendChild(spanCopy);
+
+      if (bool) {
+        bool = false;
+        const oInput = document.createElement('input');
+        oInput.value = this.nodes.div.textContent;
+        document.body.appendChild(oInput);
+        oInput.select();
+        document.execCommand("Copy");
+        oInput.className = 'oInput';
+        oInput.style.display = 'none';
+        document.body.removeChild(oInput);
+
+        svgWrapper.innerHTML = successcopy;
+        copyInfo.textContent = '复制成功';
+
+
+        setTimeout(() => {
+          if (copyInfo.classList.contains('visible')) {
+            copyInfo.classList.remove('visible');
+            copyInfo.classList.add('hidden');
+            copyInfo.textContent = '点击复制';
+          }
+
+          svgWrapper.innerHTML = copysvg;
+          bool = true;
+
+        }, 1000)
+      }
+
     })
 
     codePlusLibraryMenu.appendChild(selectLangueMenu);
@@ -475,10 +499,10 @@ export default class CodeTool {
     }
     getFrontOffset(this.nodes.div, endContainer, inset, (totalOffset, textContext) => {
       if (this.nodes.languageText.textContent === '纯文本') {
-          this.nodes.div.textContent = textContext;
+        this.nodes.div.textContent = textContext;
       } else {
-       const realContent = Prism.highlight(textContext, Prism.languages[this.data.language.toLocaleLowerCase()], this.data.language.toLocaleLowerCase());
-       this.nodes.div.innerHTML = realContent;
+        const realContent = Prism.highlight(textContext, Prism.languages[this.data.language.toLocaleLowerCase()], this.data.language.toLocaleLowerCase());
+        this.nodes.div.innerHTML = realContent;
 
       }
       getRealDomAndOffset(this.nodes.div, totalOffset, (el, i) => {
