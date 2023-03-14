@@ -62,7 +62,9 @@
 
 .code-plus-language {
   height: 32px;
-  padding: 0 8px;
+  -webkit-padding-start: 8px;
+     -moz-padding-start: 8px;
+          padding-inline-start: 8px;
   background-color: #fafafa;
   -webkit-transition: background-color 0.15s ease;
   -o-transition: background-color 0.15s ease;
