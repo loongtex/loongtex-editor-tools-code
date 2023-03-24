@@ -288,14 +288,19 @@ export default class CodeTool {
       if (bool) {
         bool = false;
         type = 'click';
-        const oInput = document.createElement('input');
-        oInput.value = this.nodes.div.textContent;
-        document.body.appendChild(oInput);
-        oInput.select();
-        document.execCommand("Copy");
-        oInput.className = 'oInput';
-        oInput.style.display = 'none';
-        document.body.removeChild(oInput);
+
+        let range = document.createRange();
+        range.selectNode(this.nodes.div); // 创建 Range 对象并选中整个区域
+        let selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        try {
+          document.execCommand('copy'); // 执行复制命令
+          console.log('复制成功');
+        } catch (e) {
+          console.log('复制失败');
+        }
+        selection.removeAllRanges();
 
 
 
