@@ -232,33 +232,42 @@
         box-shadow: 0 4px 20px 0 rgb(0 0 0 / 16%);
         border-radius: 4px;
         max-height: 200px;
-        overflow: auto;
         padding-top: 10px;
         margin-top: 5px;
         padding-bottom: 10px;
         padding-right: 4px;
         transition: all 297ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 198ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+        display: flex;
+        flex-direction: column;
 
-        /* 整个滚动条 */
-        &::-webkit-scrollbar {
-            /* 对应纵向滚动条的宽度 */
-            width: 8px;
-            /* 对应横向滚动条的宽度 */
-            height: 8px;
+        .code-plus-language-scroll {
+            flex: 1;
+
+
+            overflow: auto;
+
+            /* 整个滚动条 */
+            &::-webkit-scrollbar {
+                /* 对应纵向滚动条的宽度 */
+                width: 8px;
+                /* 对应横向滚动条的宽度 */
+                height: 8px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background-color: #cfcfcf;
+                border-radius: 4px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background-color: transparent;
+            }
         }
 
-        &::-webkit-scrollbar-thumb {
-            background-color: #cfcfcf;
-            border-radius: 4px;
-        }
-
-        &::-webkit-scrollbar-track {
-            background-color: transparent;
-        }
 
         .code-plus-input {
             box-sizing: border-box;
-            
+
             font-size: 12px;
             border-radius: 4px;
             border: 1px solid #c8cccf;
@@ -267,10 +276,11 @@
             -moz-appearance: none;
             display: block;
             outline: 0;
-            padding: 4px ;
-            
+            padding: 4px;
+
             text-decoration: none;
             margin-inline: 10px;
+            margin-block-end: 10px;
         }
 
 

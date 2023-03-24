@@ -153,6 +153,7 @@ export default class CodeTool {
       languageText = this.make('span'),
       languageOutside = this.make('div', 'code-plus-language-outside'),
       languageOptions = this.make('div', 'code-plus-language-options'),
+      languageOptionScroll = this.make('div','code-plus-language-scroll'),
       languageOptionContainer = this.make('div'),
       copy = this.make('div', 'code-plus-copy'),
       copyInfo = this.make('div', ['code-plus-copy-info', 'hidden']),
@@ -216,7 +217,8 @@ export default class CodeTool {
 
     })
     this.nodes.languageOptionContainer = languageOptionContainer;
-    languageOptions.appendChild(languageOptionContainer);
+    languageOptionScroll.appendChild(languageOptionContainer);
+    languageOptions.appendChild(languageOptionScroll);
     languageOutside.appendChild(languageOptions)
     this.nodes.languageOutside = languageOutside;
     this.nodes.languageOptions = languageOptions;
