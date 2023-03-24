@@ -10,6 +10,8 @@ const getFrontOffset = _getFrontOffset();
 const getRealDomAndOffset = _getRealDomAndOffset();
 import copysvg from '../svg/copy.svg';
 import successcopy from '../svg/deal.svg';
+import select from '../svg/select.svg';
+
 export default class CodeTool {
   /**
    * Notify core that read-only mode is supported
@@ -71,7 +73,9 @@ export default class CodeTool {
       codePlusLibraryMenu: null,
       languageMenu: null,
       languageOutside: null,
-      languageOptions: null
+      languageOptions: null,
+      input: null,
+      languageOptionContainer: null
     };
 
     this.data = {
@@ -149,15 +153,20 @@ export default class CodeTool {
       languageText = this.make('span'),
       languageOutside = this.make('div', 'code-plus-language-outside'),
       languageOptions = this.make('div', 'code-plus-language-options'),
+      languageOptionContainer = this.make('div'),
       copy = this.make('div', 'code-plus-copy'),
       copyInfo = this.make('div', ['code-plus-copy-info', 'hidden']),
-      svg = document.createElementNS(SVG_NS, "svg"),
-      path = document.createElementNS(SVG_NS, "path"),
-
+      svg = this.make('span'),
+      input = this.make('input', ['code-plus-input']),
 
       svgWrapper = this.make('div', [this.CSS.svgWrapper]);
 
     svgWrapper.innerHTML = copysvg;
+
+    input.value = '';
+    input.placeholder = '搜索语言';
+
+    this.nodes.input = input;
 
     let type = 'mouse'
     copy.addEventListener('mouseenter', (ev) => {
@@ -178,11 +187,41 @@ export default class CodeTool {
 
 
     copyInfo.textContent = '点击复制'
+    languageOptions.appendChild(input);
 
+    let arr = []
+    input.addEventListener('input', (event) => {
+      if (event.target.value) {
+        arr = this.languages.filter(item => {
+          var reg = new RegExp(event.target.value, "gi");
+          return item.match(reg)
+        })
+      } else {
+        arr = this.languages;
+      }
+
+
+      const fragment = document.createDocumentFragment();
+      for (const language of arr) {
+        const el = this.make('div', 'code-plus-language-option');
+        el.textContent = language;
+        fragment.appendChild(el)
+      }
+
+      while (languageOptionContainer.firstChild) {
+        languageOptionContainer.removeChild(languageOptionContainer.firstChild);
+      }
+
+      languageOptionContainer.appendChild(fragment)
+
+    })
+    this.nodes.languageOptionContainer = languageOptionContainer;
+    languageOptions.appendChild(languageOptionContainer);
     languageOutside.appendChild(languageOptions)
     this.nodes.languageOutside = languageOutside;
     this.nodes.languageOptions = languageOptions;
-    languageOutside.addEventListener('click', () => {
+    languageOutside.addEventListener('click', (event) => {
+      if (languageOptions.contains(event.target)) return;
       if (document.body.contains(languageOutside)) {
         document.body.removeChild(languageOutside);
       }
@@ -190,19 +229,11 @@ export default class CodeTool {
 
 
 
-    path.setAttribute("d", "M0.107825,7.735916949768066C0.250439,7.871526949768066,0.481338,7.871526949768066,0.617161,7.729136949768066L3.4966,4.793103949768066L6.37605,7.729136949768066C6.51866,7.871526949768066,6.74956,7.871526949768066,6.89218,7.735916949768066C7.03479,7.593516949768066,7.03479,7.362976949768067,6.89897,7.220586949768066L3.75467,4.026887949768066C3.68676,3.9590809497680666,3.59847,3.9183969497680664,3.4966,3.9183969497680664C3.40153,3.9183969497680664,3.30645,3.9590809497680666,3.23854,4.026887949768066L0.101034,7.220586949768066C-0.0347891,7.362976949768067,-0.0347891,7.593516949768066,0.107825,7.735916949768066Z");
-    path.setAttribute("fill", "currentColor");
-    path.setAttribute("fill-rule", "evenodd");
-    svg.setAttribute("width", 7);
-    svg.setAttribute("height", 4);
-    svg.setAttribute("viewBox", "0 0 7 4");
-    svg.classList.add('code-plus-language-svg');
-
 
     languageText.textContent = this.data.language;
     this.nodes.languageText = languageText;
     languageItem.appendChild(languageText);
-    svg.appendChild(path);
+    svg.innerHTML = select;
     languageItem.appendChild(svg);
 
     const fragment = document.createDocumentFragment();
@@ -213,8 +244,8 @@ export default class CodeTool {
       fragment.appendChild(el)
     }
 
-    languageOptions.appendChild(fragment);
-    languageOptions.addEventListener('click', (event) => {
+    languageOptionContainer.appendChild(fragment);
+    languageOptionContainer.addEventListener('click', (event) => {
       const text = event.target.textContent;
       if (text && text !== '纯文本') {
         const html = this.generateHtml(text);
@@ -292,7 +323,7 @@ export default class CodeTool {
     })
 
     copyInfo.addEventListener('transitionend', (ev) => {
-      if(ev.target.classList.contains('hidden')){
+      if (ev.target.classList.contains('hidden')) {
         copyInfo.textContent = '点击复制';
       }
     })
@@ -536,6 +567,22 @@ export default class CodeTool {
     }
     this.nodes.languageOptions.style.top = `${(bottom)}px`;
     this.nodes.languageOptions.style.left = `${left}px`;
+
+    this.nodes.input.focus();
+    // 重置数据
+    this.nodes.input.value = '';
+    const fragment = document.createDocumentFragment();
+    for (const language of this.languages) {
+      const el = this.make('div', 'code-plus-language-option');
+      el.textContent = language;
+      fragment.appendChild(el)
+    }
+
+    while (this.nodes.languageOptionContainer.firstChild) {
+      this.nodes.languageOptionContainer.removeChild(this.nodes.languageOptionContainer.firstChild);
+    }
+
+    this.nodes.languageOptionContainer.appendChild(fragment)
   }
   wrapperMouseEnter(event) {
     event.preventDefault();

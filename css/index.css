@@ -135,12 +135,40 @@
   display: -moz-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-align-items: center;
+     -moz-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   border-radius: 4px;
   cursor: pointer;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+}
+.code-plus-library-menu .code-plus-select-language-menu .code-plus-copy span,
+.code-plus-library-menu .code-plus-select-language-menu .code-plus-language-item span {
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+     -moz-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.code-plus-library-menu .code-plus-select-language-menu .code-plus-copy span:last-child,
+.code-plus-library-menu .code-plus-select-language-menu .code-plus-language-item span:last-child {
+  width: 10px;
+  height: 10px;
+  -webkit-justify-content: center;
+     -moz-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.code-plus-library-menu .code-plus-select-language-menu .code-plus-copy span:last-child path,
+.code-plus-library-menu .code-plus-select-language-menu .code-plus-language-item span:last-child path {
+  stroke: unset;
 }
 .code-plus-library-menu .code-plus-select-language-menu .code-plus-copy {
   width: 28px;
@@ -283,6 +311,21 @@
 }
 .code-plus-language-outside .code-plus-language-options::-webkit-scrollbar-track {
   background-color: transparent;
+}
+.code-plus-language-outside .code-plus-language-options .code-plus-input {
+  -moz-box-sizing: border-box;
+       box-sizing: border-box;
+  font-size: 12px;
+  border-radius: 4px;
+  border: 1px solid #c8cccf;
+  color: #6a6f77;
+  -web-kit-appearance: none;
+  -moz-appearance: none;
+  display: block;
+  outline: 0;
+  padding: 4px;
+  text-decoration: none;
+  margin-inline: 10px;
 }
 .code-plus-language-outside .code-plus-language-options .code-plus-language-option {
   cursor: pointer;

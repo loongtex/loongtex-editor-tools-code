@@ -27,8 +27,9 @@
     transition: background-color .15s ease;
     border-bottom-right-radius: 4px;
     border-bottom-left-radius: 4px;
-      /* 整个滚动条 */
-      &::-webkit-scrollbar {
+
+    /* 整个滚动条 */
+    &::-webkit-scrollbar {
         /* 对应纵向滚动条的宽度 */
         width: 8px;
         /* 对应横向滚动条的宽度 */
@@ -107,9 +108,25 @@
         .code-plus-copy,
         .code-plus-language-item {
             display: flex;
+            align-items: center;
             border-radius: 4px;
             cursor: pointer;
             user-select: none;
+
+            span {
+                display: flex;
+                align-items: center;
+
+                &:last-child {
+                    width: 10px;
+                    height: 10px;
+                    justify-content: center;
+
+                    path {
+                        stroke: unset;
+                    }
+                }
+            }
         }
 
         .code-plus-copy {
@@ -237,6 +254,23 @@
 
         &::-webkit-scrollbar-track {
             background-color: transparent;
+        }
+
+        .code-plus-input {
+            box-sizing: border-box;
+            
+            font-size: 12px;
+            border-radius: 4px;
+            border: 1px solid #c8cccf;
+            color: #6a6f77;
+            -web-kit-appearance: none;
+            -moz-appearance: none;
+            display: block;
+            outline: 0;
+            padding: 4px ;
+            
+            text-decoration: none;
+            margin-inline: 10px;
         }
 
 
