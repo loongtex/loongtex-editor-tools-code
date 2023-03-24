@@ -1,0 +1,10 @@
+{
+    "plugins": [
+      ["prismjs", {
+          "languages": "all",
+          "plugins": [],
+          "theme": "default",
+          "css": true
+      }]
+    ]
+  }

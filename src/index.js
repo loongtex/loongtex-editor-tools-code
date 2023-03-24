@@ -11,7 +11,6 @@ const getRealDomAndOffset = _getRealDomAndOffset();
 import copysvg from '../svg/copy.svg';
 import successcopy from '../svg/deal.svg';
 import select from '../svg/select.svg';
-
 export default class CodeTool {
   /**
    * Notify core that read-only mode is supported
@@ -144,6 +143,7 @@ export default class CodeTool {
   }
 
   makeLanguageMenu() {
+
     const SVG_NS = "http://www.w3.org/2000/svg";
 
     const codePlusLibraryMenu = this.make('div', ['code-plus-library-menu', this.CSS.language]),
@@ -153,7 +153,7 @@ export default class CodeTool {
       languageText = this.make('span'),
       languageOutside = this.make('div', 'code-plus-language-outside'),
       languageOptions = this.make('div', 'code-plus-language-options'),
-      languageOptionScroll = this.make('div','code-plus-language-scroll'),
+      languageOptionScroll = this.make('div', 'code-plus-language-scroll'),
       languageOptionContainer = this.make('div'),
       copy = this.make('div', 'code-plus-copy'),
       copyInfo = this.make('div', ['code-plus-copy-info', 'hidden']),
@@ -249,17 +249,17 @@ export default class CodeTool {
     languageOptionContainer.appendChild(fragment);
     languageOptionContainer.addEventListener('click', (event) => {
       const text = event.target.textContent;
+
       if (text && text !== '纯文本') {
         const html = this.generateHtml(text);
-        if (html) {
-          this.nodes.languageText.textContent = text;
-          this.nodes.div.innerHTML = html;
-        }
+        this.nodes.languageText.textContent = text;
+        this.nodes.div.innerHTML = html;
       } else {
         this.nodes.languageText.textContent = text;
         this.nodes.div.textContent = this.nodes.div.textContent;
-
       }
+
+      this.data.language = text;
 
       if (document.body.contains(this.nodes.languageOutside)) {
         document.body.removeChild(this.nodes.languageOutside);
@@ -548,6 +548,7 @@ export default class CodeTool {
         return
       }
     }
+
     getFrontOffset(this.nodes.div, endContainer, inset, (totalOffset, textContext) => {
       if (this.nodes.languageText.textContent === '纯文本') {
         this.nodes.div.textContent = textContext;
