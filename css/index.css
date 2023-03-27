@@ -41,7 +41,7 @@
   height: 4px;
   border-radius: 3px;
   background: #BFBFBF;
-  cursor: ns-resize;
+  cursor: pointer;
 }
 
 .code-plus__outside {
@@ -49,6 +49,7 @@
   overflow-x: auto;
   -moz-box-sizing: border-box;
        box-sizing: border-box;
+  height: 100%;
   max-height: 440px;
   overflow-y: hidden;
   /* 整个滚动条 */

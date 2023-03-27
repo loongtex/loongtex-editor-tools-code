@@ -168,6 +168,8 @@ export default class CodeTool {
         'endMouseTop': ev.clientY
       }
 
+      ev.target.style.cursor = 'ns-resize'
+
       // 绑定鼠标移动事件
       document.addEventListener('mousemove', handleMouseMove);
       // 绑定鼠标放开事件
@@ -181,7 +183,6 @@ export default class CodeTool {
       const rTextareaWrap = outside;
       const TextAreaWrap = that.TextAreaWrap;
 
-      console.log(TextAreaWrap)
       // 获取鼠标最后移动的位置（Y轴）
       const { endMouseTop } = that.dragState;
       // 获取当前的文本框高度
@@ -233,7 +234,7 @@ export default class CodeTool {
       // 修改发送框高度
       rTextareaWrap.style.maxHeight = newTextAreaHeight + 'px';
       // 修改光标为可移动
-      rResizeLine.style.cursor = 'move';
+      rResizeLine.style.cursor = 'ns-resize';
 
       // 更新鼠标最后移动的位置（Y轴）
       that.dragState.endMouseTop = event.clientY;
@@ -693,7 +694,7 @@ export default class CodeTool {
     // 是否需要展示拖条
     if (!this.nodes.outside_container.contains(this.nodes.drag) && this.nodes.div.getBoundingClientRect().height > this.TextAreaWrap.MinHeight) {
       this.nodes.outside_container.appendChild(this.nodes.drag)
-    } else if (this.nodes.div.getBoundingClientRect().height <= this.TextAreaWrap.MinHeight && this.nodes.outside_container.contains(this.nodes.drag)){
+    } else if (this.nodes.div.getBoundingClientRect().height <= this.TextAreaWrap.MinHeight && this.nodes.outside_container.contains(this.nodes.drag)) {
       this.nodes.outside_container.removeChild(this.nodes.drag);
     }
 
