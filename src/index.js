@@ -115,6 +115,7 @@ export default class CodeTool {
       inside = this.make('div', [this.CSS.div, this.CSS.input]),
       outside_container = this.make('div', ['code-plus-outside-container']),
       drag = this.make('div', 'code-plus-drag'),
+      dragBack = this.make('div','code-plus-drag-back'),
       outside = this.make('div', [this.CSS.divOutside]);
 
     wrapper.style.position = "relative";
@@ -142,10 +143,14 @@ export default class CodeTool {
 
     outside_container.appendChild(outside);
 
+
+    dragBack.appendChild(drag);
     this.nodes.outside_container = outside_container;
+
     this.nodes.drag = drag;
+    this.nodes.dragBack = dragBack;
     if (this.TextAreaWrap.MaxHeight > this.TextAreaWrap.MinHeight) {
-      outside_container.appendChild(drag);
+      outside_container.appendChild(dragBack);
 
     }
 
@@ -201,6 +206,8 @@ export default class CodeTool {
         if (oldTextAreaHeight >= TextAreaWrap.MaxHeight) {
           // 修改光标为可被向上移动
           rResizeLine.style.cursor = 'n-resize';
+
+          that.nodes.dragBack.style.backgroundImage = 'none';
           return false;
         }
 
@@ -216,6 +223,8 @@ export default class CodeTool {
           rResizeLine.style.cursor = 's-resize';
           return false;
         }
+
+        that.nodes.dragBack.style.backgroundImage = 'linear-gradient(-180deg, rgba(255, 255, 255, 0) 0%, #ebebeb 100%)'
 
         // 计算新的发送框高度
         newTextAreaHeight = oldTextAreaHeight - distance;
@@ -692,10 +701,10 @@ export default class CodeTool {
 
 
     // 是否需要展示拖条
-    if (!this.nodes.outside_container.contains(this.nodes.drag) && this.nodes.div.getBoundingClientRect().height > this.TextAreaWrap.MinHeight) {
-      this.nodes.outside_container.appendChild(this.nodes.drag)
-    } else if (this.nodes.div.getBoundingClientRect().height <= this.TextAreaWrap.MinHeight && this.nodes.outside_container.contains(this.nodes.drag)) {
-      this.nodes.outside_container.removeChild(this.nodes.drag);
+    if (!this.nodes.outside_container.contains(this.nodes.dragBack) && this.nodes.div.getBoundingClientRect().height > this.TextAreaWrap.MinHeight) {
+      this.nodes.outside_container.appendChild(this.nodes.dragBack)
+    } else if (this.nodes.div.getBoundingClientRect().height <= this.TextAreaWrap.MinHeight && this.nodes.outside_container.contains(this.nodes.dragBack)) {
+      this.nodes.outside_container.removeChild(this.nodes.dragBack);
     }
 
     this.TextAreaWrap.MaxHeight = this.nodes.div.getBoundingClientRect().height;

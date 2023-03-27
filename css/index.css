@@ -23,10 +23,25 @@
 
 .code-plus-outside-container {
   position: relative;
-  padding: 0 12px 36px;
+  padding: 0 12px 22px;
   background-color: #fafafa;
   border-bottom-right-radius: 4px;
   border-bottom-left-radius: 4px;
+}
+.code-plus-outside-container .code-plus-drag-back {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  left: 0;
+  height: 36px;
+  -webkit-transition: background-image ease 0.3s;
+  -o-transition: background-image ease 0.3s;
+  -moz-transition: background-image ease 0.3s;
+  transition: background-image ease 0.3s;
+  background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #ebebeb 100%);
+  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #ebebeb 100%);
+  background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #ebebeb 100%);
+  background-image: linear-gradient(-180deg, rgba(255, 255, 255, 0) 0%, #ebebeb 100%);
 }
 .code-plus-outside-container .code-plus-drag {
   position: absolute;
@@ -50,6 +65,7 @@
   -moz-box-sizing: border-box;
        box-sizing: border-box;
   height: 100%;
+  min-height: 37px;
   max-height: 440px;
   overflow-y: hidden;
   /* 整个滚动条 */
