@@ -149,13 +149,13 @@ export default class CodeTool {
 
     }
 
-    // drag.addEventListener('click', () => {
-    //   if (outside.style.maxHeight === 'none') {
-    //     outside.style.maxHeight = '440px';
-    //   } else {
-    //     outside.style.maxHeight = 'none';
-    //   }
-    // })
+    drag.addEventListener('dblclick', () => {
+      if (outside.style.maxHeight === 'none') {
+        outside.style.maxHeight = '440px';
+      } else {
+        outside.style.maxHeight = 'none';
+      }
+    })
 
     drag.addEventListener('mousedown', (ev) => {
       document.onselectstart = () => false;

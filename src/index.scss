@@ -40,6 +40,8 @@
     width: 100%;
     overflow-x: auto;
     box-sizing: border-box;
+    transition: max-height 0.15s ease;
+    height: 100%
     max-height: calc(22px * 20);
     overflow-y: hidden;
 
