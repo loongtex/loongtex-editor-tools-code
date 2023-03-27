@@ -13,7 +13,7 @@ import successcopy from '../svg/deal.svg';
 import select from '../svg/select.svg';
 export default class CodeTool {
   /**
-   * Notify core that read-only mode is supported
+   * Notify core this read-only mode is supported
    *
    * @returns {boolean}
    */
@@ -74,12 +74,15 @@ export default class CodeTool {
       languageOutside: null,
       languageOptions: null,
       input: null,
-      languageOptionContainer: null
+      languageOptionContainer: null,
+      outside_container: null,
+      drag: null
     };
 
     this.data = {
       code: data.code || '',
       language: data.language || '纯文本',
+      lineNumber: data.lineNumber || 0,
     };
 
     this.languages = config.languages || this.defaultLanguages();
@@ -90,6 +93,14 @@ export default class CodeTool {
 
     this.isInput = true;
 
+    this.dragState = {
+      'startMouseTop': 0,
+      'endMouseTop': 0,
+    }
+    this.TextAreaWrap = {
+      MinHeight: 440,
+      MaxHeight: this.data.lineNumber
+    }
     this.nodes.holder = this.drawView();
   }
 
@@ -102,6 +113,8 @@ export default class CodeTool {
   drawView() {
     const wrapper = this.make('div', [this.CSS.baseClass, this.CSS.wrapper]),
       inside = this.make('div', [this.CSS.div, this.CSS.input]),
+      outside_container = this.make('div', ['code-plus-outside-container']),
+      drag = this.make('div', 'code-plus-drag'),
       outside = this.make('div', [this.CSS.divOutside]);
 
     wrapper.style.position = "relative";
@@ -127,7 +140,115 @@ export default class CodeTool {
 
     wrapper.appendChild(languageMenu);
 
-    wrapper.appendChild(outside);
+    outside_container.appendChild(outside);
+
+    this.nodes.outside_container = outside_container;
+    this.nodes.drag = drag;
+    if (this.TextAreaWrap.MaxHeight > this.TextAreaWrap.MinHeight) {
+      outside_container.appendChild(drag);
+
+    }
+
+    // drag.addEventListener('click', () => {
+    //   if (outside.style.maxHeight === 'none') {
+    //     outside.style.maxHeight = '440px';
+    //   } else {
+    //     outside.style.maxHeight = 'none';
+    //   }
+    // })
+
+    drag.addEventListener('mousedown', (ev) => {
+      document.onselectstart = () => false;
+      document.ondragstart = () => false;
+
+      this.dragState = {
+        // 鼠标开始移动的位置（Y轴）
+        'startMouseTop': ev.clientY,
+        // 鼠标最后移动的位置（Y轴）
+        'endMouseTop': ev.clientY
+      }
+
+      // 绑定鼠标移动事件
+      document.addEventListener('mousemove', handleMouseMove);
+      // 绑定鼠标放开事件
+      document.addEventListener('mouseup', handleMouseUp);
+
+    })
+
+    const that = this
+    function handleMouseMove(event) {
+      const rResizeLine = that.nodes.drag;
+      const rTextareaWrap = outside;
+      const TextAreaWrap = that.TextAreaWrap;
+
+      console.log(TextAreaWrap)
+      // 获取鼠标最后移动的位置（Y轴）
+      const { endMouseTop } = that.dragState;
+      // 获取当前的文本框高度
+      const oldTextAreaHeight = rTextareaWrap.getBoundingClientRect().height;
+      // 新的文本框高度
+      let newTextAreaHeight = 0;
+
+      // 计算鼠标移动的距离
+      const distance = Math.abs(
+        parseInt(((endMouseTop - event.clientY) * 100).toString(), 10) / 100
+      );
+
+      // 若鼠标向下移动
+      if (endMouseTop <= event.clientY) {
+        // 发送框高度达到最大
+        if (oldTextAreaHeight >= TextAreaWrap.MaxHeight) {
+          // 修改光标为可被向上移动
+          rResizeLine.style.cursor = 'n-resize';
+          return false;
+        }
+
+        // 计算新的发送框高度
+        newTextAreaHeight = oldTextAreaHeight + distance;
+      }
+      // 若鼠标向上移动
+      else {
+
+        // 发送框高度达到最小
+        if (oldTextAreaHeight <= TextAreaWrap.MinHeight) {
+          // 修改光标为可被向下移动
+          rResizeLine.style.cursor = 's-resize';
+          return false;
+        }
+
+        // 计算新的发送框高度
+        newTextAreaHeight = oldTextAreaHeight - distance;
+      }
+
+      // 兼容鼠标快速拖动的情况：新的发送框高度不能超过最大值
+      // if (newTextAreaHeight > TextAreaWrap.MaxHeight) {
+      //   newTextAreaHeight = TextAreaWrap.MaxHeight;
+      // }
+
+      // // 兼容鼠标快速拖动的情况：新的发送框高度不能小于最小值
+      // if (newTextAreaHeight < TextAreaWrap.MinHeight) {
+      //   newTextAreaHeight = TextAreaWrap.MinHeight;
+      // }
+
+      // 修改发送框高度
+      rTextareaWrap.style.maxHeight = newTextAreaHeight + 'px';
+      // 修改光标为可移动
+      rResizeLine.style.cursor = 'move';
+
+      // 更新鼠标最后移动的位置（Y轴）
+      that.dragState.endMouseTop = event.clientY;
+    }
+    function handleMouseUp(event) {
+      // 移除鼠标移动事件
+      document.removeEventListener('mousemove', handleMouseMove);
+      // 移除鼠标放开事件
+      document.removeEventListener('mouseup', handleMouseUp);
+      // 允许用户选择网页中文字
+      document.onselectstart = null;
+      // 允许用户拖动元素
+      document.ondragstart = null;
+    }
+    wrapper.appendChild(outside_container);
     inside.addEventListener("paste", (event) => this.insideInput(event, 'paste'));
     inside.addEventListener("input", (event) => this.insideInput(event, 'input'));
     inside.addEventListener("keydown", (event) => this.insideInput(event, 'keydown'));
@@ -398,6 +519,7 @@ export default class CodeTool {
     return {
       code: codeWrapper.querySelector('.code-plus__inside').textContent,
       language: codeWrapper.querySelector('.code-plus-language-item').textContent,
+      lineNumber: Math.floor(codeWrapper.querySelector('.cdx-input').clientHeight),
     };
   }
 
@@ -566,6 +688,16 @@ export default class CodeTool {
         selection.setCursorOffset(el, i)
       })
     })
+
+
+    // 是否需要展示拖条
+    if (!this.nodes.outside_container.contains(this.nodes.drag) && this.nodes.div.getBoundingClientRect().height > this.TextAreaWrap.MinHeight) {
+      this.nodes.outside_container.appendChild(this.nodes.drag)
+    } else if (this.nodes.div.getBoundingClientRect().height <= this.TextAreaWrap.MinHeight && this.nodes.outside_container.contains(this.nodes.drag)){
+      this.nodes.outside_container.removeChild(this.nodes.drag);
+    }
+
+    this.TextAreaWrap.MaxHeight = this.nodes.div.getBoundingClientRect().height;
   }
 
   languageMenuClick(event) {
@@ -606,4 +738,5 @@ export default class CodeTool {
       this.nodes.languageMenu.style.opacity = '0';
     }
   }
+
 }

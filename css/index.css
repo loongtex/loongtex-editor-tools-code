@@ -21,19 +21,36 @@
   content: attr(data-placeholder);
 }
 
+.code-plus-outside-container {
+  position: relative;
+  padding: 0 12px 36px;
+  background-color: #fafafa;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.code-plus-outside-container .code-plus-drag {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+     -moz-transform: translateX(-50%);
+      -ms-transform: translateX(-50%);
+       -o-transform: translateX(-50%);
+          transform: translateX(-50%);
+  width: 96px;
+  height: 4px;
+  border-radius: 3px;
+  background: #BFBFBF;
+  cursor: ns-resize;
+}
+
 .code-plus__outside {
   width: 100%;
   overflow-x: auto;
-  background-color: #fafafa;
-  padding: 0 12px 32px;
   -moz-box-sizing: border-box;
        box-sizing: border-box;
-  -webkit-transition: background-color 0.15s ease;
-  -o-transition: background-color 0.15s ease;
-  -moz-transition: background-color 0.15s ease;
-  transition: background-color 0.15s ease;
-  border-bottom-right-radius: 4px;
-  border-bottom-left-radius: 4px;
+  max-height: 440px;
+  overflow-y: hidden;
   /* 整个滚动条 */
 }
 .code-plus__outside::-webkit-scrollbar {
@@ -41,6 +58,7 @@
   width: 8px;
   /* 对应横向滚动条的宽度 */
   height: 8px;
+  display: none;
 }
 .code-plus__outside::-webkit-scrollbar-thumb {
   background-color: #cfcfcf;
