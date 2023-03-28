@@ -109,6 +109,7 @@
      -moz-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
+  pointer-events: none;
 }
 .code-plus__outside .code-plus-line-number-es span {
   display: inline-block;

@@ -94,6 +94,7 @@
         height: auto;
         display: flex;
         flex-direction: column;
+        pointer-events: none;
         span{
             display: inline-block;
             width:40px;
