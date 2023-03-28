@@ -55,6 +55,9 @@ export default class CodeTool {
 
     this.placeholder = this.api.i18n.t(config.placeholder || CodeTool.DEFAULT_PLACEHOLDER);
 
+    // 点击时的滚动事件
+    this.dragMove = config.dragMoveer.dragMove;
+
     this.CSS = {
       baseClass: this.api.styles.block,
       input: this.api.styles.input,
@@ -115,7 +118,7 @@ export default class CodeTool {
       inside = this.make('div', [this.CSS.div, this.CSS.input]),
       outside_container = this.make('div', ['code-plus-outside-container']),
       drag = this.make('div', 'code-plus-drag'),
-      dragBack = this.make('div','code-plus-drag-back'),
+      dragBack = this.make('div', 'code-plus-drag-back'),
       outside = this.make('div', [this.CSS.divOutside]);
 
     wrapper.style.position = "relative";
@@ -154,7 +157,7 @@ export default class CodeTool {
 
     }
 
-    drag.addEventListener('dblclick', () => {
+    dragBack.addEventListener('dblclick', () => {
       if (outside.style.maxHeight === 'none') {
         outside.style.maxHeight = '440px';
       } else {
@@ -162,7 +165,7 @@ export default class CodeTool {
       }
     })
 
-    drag.addEventListener('mousedown', (ev) => {
+    dragBack.addEventListener('mousedown', (ev) => {
       document.onselectstart = () => false;
       document.ondragstart = () => false;
 
@@ -184,7 +187,7 @@ export default class CodeTool {
 
     const that = this
     function handleMouseMove(event) {
-      const rResizeLine = that.nodes.drag;
+      const rResizeLine = that.nodes.dragBack;
       const rTextareaWrap = outside;
       const TextAreaWrap = that.TextAreaWrap;
 
@@ -204,6 +207,8 @@ export default class CodeTool {
       if (endMouseTop <= event.clientY) {
         // 发送框高度达到最大
         if (oldTextAreaHeight >= (TextAreaWrap.MaxHeight + 40)) {
+          that.dragMove({ direction: 'down', end: true, event, distance:0 })
+
           // 修改光标为可被向上移动
           rResizeLine.style.cursor = 'n-resize';
 
@@ -213,12 +218,17 @@ export default class CodeTool {
 
         // 计算新的发送框高度
         newTextAreaHeight = oldTextAreaHeight + distance;
+
+        // 触发
+        that.dragMove({ direction: 'down', end: false, event, distance })
       }
       // 若鼠标向上移动
       else {
 
         // 发送框高度达到最小
         if (oldTextAreaHeight <= TextAreaWrap.MinHeight) {
+          that.dragMove({ direction: 'up', end: true, event, distance:0 })
+
           // 修改光标为可被向下移动
           rResizeLine.style.cursor = 's-resize';
           return false;
@@ -228,6 +238,10 @@ export default class CodeTool {
 
         // 计算新的发送框高度
         newTextAreaHeight = oldTextAreaHeight - distance;
+
+        // 触发
+        that.dragMove({ direction: 'up', end: false, event, distance })
+
       }
 
       // 兼容鼠标快速拖动的情况：新的发送框高度不能超过最大值
@@ -249,6 +263,7 @@ export default class CodeTool {
       that.dragState.endMouseTop = event.clientY;
     }
     function handleMouseUp(event) {
+      that.dragMove({ direction: '', end: true, event });
       // 移除鼠标移动事件
       document.removeEventListener('mousemove', handleMouseMove);
       // 移除鼠标放开事件
@@ -264,8 +279,8 @@ export default class CodeTool {
     inside.addEventListener("keydown", (event) => this.insideInput(event, 'keydown'));
     inside.addEventListener('compositionstart', (event) => this.handlerComposition(event, 'input'));
     inside.addEventListener('compositionend', (event) => this.handlerComposition(event, 'input'))
-    wrapper.addEventListener('mouseenter', (event) => this.wrapperMouseEnter(event))
-    wrapper.addEventListener('mouseleave', (event) => this.wrapperMouseLeave(event))
+    inside.addEventListener('mouseenter', (event) => this.wrapperMouseEnter(event))
+    inside.addEventListener('mouseleave', (event) => this.wrapperMouseLeave(event))
 
     this.nodes.div = inside;
 

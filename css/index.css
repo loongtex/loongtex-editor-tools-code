@@ -39,7 +39,8 @@
   -o-transition: background-image ease 0.3s;
   -moz-transition: background-image ease 0.3s;
   transition: background-image ease 0.3s;
-  pointer-events: none;
+  cursor: pointer;
+  pointer-events: all;
 }
 .code-plus-outside-container .code-plus-drag {
   position: absolute;
@@ -54,7 +55,6 @@
   height: 4px;
   border-radius: 3px;
   background: #BFBFBF;
-  cursor: pointer;
   pointer-events: all;
 }
 
@@ -68,8 +68,8 @@
   max-height: 440px;
   padding: 0 40px 40px;
   overflow-y: hidden;
-  -webkit-mask: -webkit-linear-gradient(top, #000, transparent 70%), -webkit-linear-gradient(right, #000, #000);
-          mask: linear-gradient(180deg, #000, transparent 70%), linear-gradient(270deg, #000, #000);
+  -webkit-mask: -webkit-linear-gradient(bottom, transparent 1%, #fff 99%), -webkit-linear-gradient(right, #000, #000);
+          mask: linear-gradient(to top, transparent 1%, #fff 99%), linear-gradient(270deg, #000, #000);
   -webkit-mask-size: 100% 40px, 100% -webkit-calc(100% - 40px);
           mask-size: 100% 40px, 100% -moz-calc(100% - 40px);
           mask-size: 100% 40px, 100% calc(100% - 40px);
