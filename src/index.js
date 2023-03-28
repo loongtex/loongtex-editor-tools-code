@@ -279,8 +279,8 @@ export default class CodeTool {
     inside.addEventListener("keydown", (event) => this.insideInput(event, 'keydown'));
     inside.addEventListener('compositionstart', (event) => this.handlerComposition(event, 'input'));
     inside.addEventListener('compositionend', (event) => this.handlerComposition(event, 'input'))
-    inside.addEventListener('mouseenter', (event) => this.wrapperMouseEnter(event))
-    inside.addEventListener('mouseleave', (event) => this.wrapperMouseLeave(event))
+    wrapper.addEventListener('mouseenter', (event) => this.wrapperMouseEnter(event))
+    wrapper.addEventListener('mouseleave', (event) => this.wrapperMouseLeave(event))
 
     this.nodes.div = inside;
 
@@ -485,6 +485,9 @@ export default class CodeTool {
 
     this.nodes.codePlusLibraryMenu = codePlusLibraryMenu;
     this.nodes.languageMenu = selectLangueMenu;
+
+    this.nodes.languageItem_svg  = svg;
+    this.nodes.copy = copy;
 
     return codePlusLibraryMenu;
 
@@ -752,15 +755,17 @@ export default class CodeTool {
   wrapperMouseEnter(event) {
     event.preventDefault();
     event.stopPropagation()
-    if ((this.nodes.languageMenu.style.opacity === '' || this.nodes.languageMenu.style.opacity === '0')) {
-      this.nodes.languageMenu.style.opacity = '1';
+    if ((this.nodes.copy.style.opacity === '' || this.nodes.copy.style.opacity === '0')) {
+      this.nodes.copy.style.opacity = '1';
+      this.nodes.languageItem_svg.style.opacity = '1'
     }
   }
   wrapperMouseLeave(event) {
     event.preventDefault();
     event.stopPropagation()
-    if ((this.nodes.languageMenu.style.opacity === '1' && !document.body.contains(this.nodes.languageOutside))) {
-      this.nodes.languageMenu.style.opacity = '0';
+    if ((this.nodes.copy.style.opacity === '1' && !document.body.contains(this.nodes.languageOutside))) {
+      this.nodes.copy.style.opacity = '0';
+      this.nodes.languageItem_svg.style.opacity = '0'
     }
   }
 
