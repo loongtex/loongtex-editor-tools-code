@@ -119,7 +119,8 @@ export default class CodeTool {
       outside_container = this.make('div', ['code-plus-outside-container']),
       drag = this.make('div', 'code-plus-drag'),
       dragBack = this.make('div', 'code-plus-drag-back'),
-      outside = this.make('div', [this.CSS.divOutside]);
+      outside = this.make('div', [this.CSS.divOutside]),
+      lineNumbers = this.make('div', ['code-plus-line-number-es']);
 
     wrapper.style.position = "relative";
     inside.setAttribute("contenteditable", "true");
@@ -140,6 +141,8 @@ export default class CodeTool {
 
     const languageMenu = this.makeLanguageMenu();
 
+    this.nodes.lineNumbers = lineNumbers;
+    outside.appendChild(lineNumbers);
     outside.appendChild(inside);
 
     wrapper.appendChild(languageMenu);
@@ -283,6 +286,7 @@ export default class CodeTool {
     wrapper.addEventListener('mouseleave', (event) => this.wrapperMouseLeave(event))
 
     this.nodes.div = inside;
+    this.createLine();
 
 
     return wrapper;
@@ -488,6 +492,8 @@ export default class CodeTool {
 
     this.nodes.languageItem_svg  = svg;
     this.nodes.copy = copy;
+
+
 
     return codePlusLibraryMenu;
 
@@ -726,6 +732,7 @@ export default class CodeTool {
     }
 
     this.TextAreaWrap.MaxHeight = this.nodes.div.getBoundingClientRect().height;
+    this.createLine();
   }
 
   languageMenuClick(event) {
@@ -767,6 +774,34 @@ export default class CodeTool {
       this.nodes.copy.style.opacity = '0';
       this.nodes.languageItem_svg.style.opacity = '0'
     }
+  }
+
+  createLine(){
+    const nodeLen = this.nodes.lineNumbers.childNodes.length;
+    const vnodeLen = Math.ceil(this.TextAreaWrap.MaxHeight / 22)
+
+    console.log(nodeLen, vnodeLen)
+    // 分情况
+    // 如果nodelen大于vnodelen了,说明是删除
+    if(nodeLen > vnodeLen){
+      let number = nodeLen - vnodeLen; 
+      while(number>0){
+        this.nodes.lineNumbers.removeChild(this.nodes.lineNumbers.lastChild);
+        number--;
+      }
+    }
+
+    // 如果vnodelen大于nodelen.说明是增加
+    if(vnodeLen>nodeLen){
+      const fragment = document.createDocumentFragment();
+      for (let index = 0; index < (vnodeLen - nodeLen); index++) {
+        const span = document.createElement('span');
+        span.textContent = ( nodeLen + index +1 );
+        fragment.appendChild(span);
+      }  
+      this.nodes.lineNumbers.appendChild(fragment);
+    }
+    
   }
 
 }

@@ -58,6 +58,7 @@
     max-height: calc(22px * 20);
     padding: 0 40px 40px;
     overflow-y: hidden;
+    position: relative;
 
     mask: 
     linear-gradient(to top,transparent 1%, #fff 99%),
@@ -83,6 +84,26 @@
 
     &::-webkit-scrollbar-track {
         background-color: transparent;
+    }
+
+    .code-plus-line-number-es{
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 40px;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        span{
+            display: inline-block;
+            width:40px;
+            height: 22px;
+            padding-inline-start: 5px;
+            line-height: 22px;
+            font-size: 14px;
+            text-align: left;
+            color: #B3B3B3;
+        }
     }
 }
 
