@@ -203,7 +203,7 @@ export default class CodeTool {
       // 若鼠标向下移动
       if (endMouseTop <= event.clientY) {
         // 发送框高度达到最大
-        if (oldTextAreaHeight >= TextAreaWrap.MaxHeight) {
+        if (oldTextAreaHeight >= (TextAreaWrap.MaxHeight + 40)) {
           // 修改光标为可被向上移动
           rResizeLine.style.cursor = 'n-resize';
 
@@ -224,7 +224,7 @@ export default class CodeTool {
           return false;
         }
 
-        that.nodes.dragBack.style.backgroundImage = 'linear-gradient(-180deg, rgba(255, 255, 255, 0) 0%, #ebebeb 100%)'
+        // that.nodes.dragBack.style.backgroundImage = 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))'
 
         // 计算新的发送框高度
         newTextAreaHeight = oldTextAreaHeight - distance;
