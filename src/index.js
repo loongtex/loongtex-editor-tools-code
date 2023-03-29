@@ -4,13 +4,14 @@
 import '../css/index.css';
 import '../css/prism.css'
 import { _getFrontOffset, selection, _getRealDomAndOffset } from './utils/string';
-import { IconBrackets } from '@codexteam/icons';
+import { IconBrackets, IconStar } from '@codexteam/icons';
 import Prism from 'prismjs'
 const getFrontOffset = _getFrontOffset();
 const getRealDomAndOffset = _getRealDomAndOffset();
 import copysvg from '../svg/copy.svg';
 import successcopy from '../svg/deal.svg';
 import select from '../svg/select.svg';
+
 export default class CodeTool {
   /**
    * Notify core this read-only mode is supported
@@ -86,7 +87,7 @@ export default class CodeTool {
 
     this.data = {
       code: data.code || '',
-      language:  data.language || config.defaultLanguage,
+      language: data.language || config.defaultLanguage,
       lineNumber: data.lineNumber || 0,
     };
 
@@ -99,6 +100,8 @@ export default class CodeTool {
     this.isEnterPress = false;
 
     this.isInput = true;
+
+    this.displayLineNumber = true;
 
     this.dragState = {
       'startMouseTop': 0,
@@ -290,7 +293,40 @@ export default class CodeTool {
     wrapper.addEventListener('mouseleave', (event) => this.wrapperMouseLeave(event))
 
     this.nodes.div = inside;
-    this.createLine();
+    this.displayLineNumber && this.createLine();
+
+
+    return wrapper;
+  }
+
+  renderSettings() {
+
+    const wrapper = this.make('div', 'ce-popover__item-wrapper'),
+      lineNumberItem = this.make('div', 'ce-popover__item'),
+      label = this.make('div', 'ce-popover__item-label'),
+      icon = this.make('div', 'ce-popover__item-icon');
+
+    const text = document.createTextNode('Line Number');
+    icon.innerHTML = IconStar;
+    label.appendChild(text);
+
+    lineNumberItem.appendChild(icon);
+    lineNumberItem.appendChild(label);
+
+    wrapper.appendChild(lineNumberItem);
+
+    lineNumberItem.addEventListener('click', () => {
+        this.displayLineNumber = !this.displayLineNumber;
+
+        if(this.displayLineNumber){
+          this.createLine();
+        }else{
+          this.removeLine();
+        }
+
+    })
+
+
 
 
     return wrapper;
@@ -783,8 +819,6 @@ export default class CodeTool {
   createLine() {
     const nodeLen = this.nodes.lineNumbers.childNodes.length;
     const vnodeLen = Math.ceil(this.TextAreaWrap.MaxHeight / 22)
-
-    console.log(nodeLen, vnodeLen)
     // 分情况
     // 如果nodelen大于vnodelen了,说明是删除
     if (nodeLen > vnodeLen) {
@@ -811,6 +845,13 @@ export default class CodeTool {
       const span = document.createElement('span');
       span.textContent = '1';
       this.nodes.lineNumbers.appendChild(span);
+    }
+  }
+
+  removeLine(){
+    const lineDom = this.nodes.lineNumbers;
+    while(lineDom.lastChild){
+      lineDom.removeChild(lineDom.lastChild);
     }
   }
 
