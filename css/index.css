@@ -120,7 +120,7 @@
           padding-inline-start: 5px;
   line-height: 22px;
   font-size: 14px;
-  text-align: left;
+  text-align: right;
   color: #B3B3B3;
 }
 
@@ -165,7 +165,7 @@
 .ce-block--selected .code-plus-language {
   background-color: inherit;
 }
-.ce-block--selected .code-plus__outside {
+.ce-block--selected .code-plus-outside-container {
   background-color: inherit;
 }
 .ce-block--selected .operator {

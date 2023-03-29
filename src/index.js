@@ -210,7 +210,7 @@ export default class CodeTool {
       if (endMouseTop <= event.clientY) {
         // 发送框高度达到最大
         if (oldTextAreaHeight >= (TextAreaWrap.MaxHeight + 40)) {
-          that.dragMove({ direction: 'down', end: true, event, distance:0 })
+          that.dragMove({ direction: 'down', end: true, event, distance: 0 })
 
           // 修改光标为可被向上移动
           rResizeLine.style.cursor = 'n-resize';
@@ -230,7 +230,7 @@ export default class CodeTool {
 
         // 发送框高度达到最小
         if (oldTextAreaHeight <= TextAreaWrap.MinHeight) {
-          that.dragMove({ direction: 'up', end: true, event, distance:0 })
+          that.dragMove({ direction: 'up', end: true, event, distance: 0 })
 
           // 修改光标为可被向下移动
           rResizeLine.style.cursor = 's-resize';
@@ -490,7 +490,7 @@ export default class CodeTool {
     this.nodes.codePlusLibraryMenu = codePlusLibraryMenu;
     this.nodes.languageMenu = selectLangueMenu;
 
-    this.nodes.languageItem_svg  = svg;
+    this.nodes.languageItem_svg = svg;
     this.nodes.copy = copy;
 
 
@@ -776,32 +776,38 @@ export default class CodeTool {
     }
   }
 
-  createLine(){
+  createLine() {
     const nodeLen = this.nodes.lineNumbers.childNodes.length;
     const vnodeLen = Math.ceil(this.TextAreaWrap.MaxHeight / 22)
 
     console.log(nodeLen, vnodeLen)
     // 分情况
     // 如果nodelen大于vnodelen了,说明是删除
-    if(nodeLen > vnodeLen){
-      let number = nodeLen - vnodeLen; 
-      while(number>0){
+    if (nodeLen > vnodeLen) {
+      let number = nodeLen - vnodeLen;
+      while (number > 0) {
         this.nodes.lineNumbers.removeChild(this.nodes.lineNumbers.lastChild);
         number--;
       }
     }
 
     // 如果vnodelen大于nodelen.说明是增加
-    if(vnodeLen>nodeLen){
+    if (vnodeLen > nodeLen) {
       const fragment = document.createDocumentFragment();
       for (let index = 0; index < (vnodeLen - nodeLen); index++) {
         const span = document.createElement('span');
-        span.textContent = ( nodeLen + index +1 );
+        span.textContent = (nodeLen + index + 1);
         fragment.appendChild(span);
-      }  
+      }
       this.nodes.lineNumbers.appendChild(fragment);
     }
-    
+
+    // 如果还没开始,都为0的情况,默认展示第一行
+    if (vnodeLen === 0 && nodeLen === 0) {
+      const span = document.createElement('span');
+      span.textContent = '1';
+      this.nodes.lineNumbers.appendChild(span);
+    }
   }
 
 }
