@@ -110,7 +110,7 @@
       -ms-flex-direction: column;
           flex-direction: column;
   pointer-events: none;
-  padding-inline: 5px;
+  padding-inline: 20px;
   -moz-box-sizing: border-box;
        box-sizing: border-box;
 }
@@ -165,13 +165,13 @@
 }
 
 .ce-block--selected .code-plus-language {
-  background-color: inherit;
+  background-color: #ECF6F0 !important;
 }
 .ce-block--selected .code-plus-outside-container {
-  background-color: inherit;
+  background-color: #ECF6F0 !important;
 }
 .ce-block--selected .operator {
-  background: transparent;
+  background: transparent !important;
 }
 
 .code-plus-text {

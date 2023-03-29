@@ -95,7 +95,7 @@
         display: flex;
         flex-direction: column;
         pointer-events: none;
-        padding-inline: 5px;
+        padding-inline: 20px;
         box-sizing: border-box;
 
         span {
@@ -136,15 +136,15 @@
 
 .ce-block--selected {
     .code-plus-language {
-        background-color: inherit;
+        background-color: #ECF6F0 !important;
     }
 
     .code-plus-outside-container {
-        background-color: inherit;
+        background-color: #ECF6F0 !important;
     }
 
     .operator {
-        background: transparent;
+        background: transparent !important;
     }
 }
 
