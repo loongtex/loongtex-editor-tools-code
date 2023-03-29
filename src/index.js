@@ -82,13 +82,17 @@ export default class CodeTool {
       drag: null
     };
 
+    console.log(data)
+
     this.data = {
       code: data.code || '',
-      language: data.language || '纯文本',
+      language:  data.language || config.defaultLanguage,
       lineNumber: data.lineNumber || 0,
     };
 
     this.languages = config.languages || this.defaultLanguages();
+
+
 
     this.range = null;
     this.selection = null;
