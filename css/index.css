@@ -110,18 +110,18 @@
       -ms-flex-direction: column;
           flex-direction: column;
   pointer-events: none;
+  padding-inline: 5px;
+  -moz-box-sizing: border-box;
+       box-sizing: border-box;
 }
 .code-plus__outside .code-plus-line-number-es span {
-  display: inline-block;
-  width: 40px;
+  display: block;
   height: 22px;
-  -webkit-padding-start: 5px;
-     -moz-padding-start: 5px;
-          padding-inline-start: 5px;
   line-height: 22px;
   font-size: 14px;
   text-align: right;
   color: #B3B3B3;
+  font-family: JetBrainsMono-Regular, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 .code-plus-svg-wrapper {
