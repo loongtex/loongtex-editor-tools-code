@@ -119,6 +119,7 @@
     border-radius: 4px;
     box-sizing: border-box;
     cursor: pointer;
+    transform:scale(0.9999);
 
     path {
         stroke: none !important;
@@ -177,13 +178,14 @@
             span {
                 display: flex;
                 align-items: center;
+                justify-content: center;
 
                 &:last-child {
                     width: 10px;
                     height: 10px;
-                    justify-content: center;
                     opacity: 0;
-                    transition: opacity 300ms ease-in 0s;
+                    transition: opacity ease 0.3s;
+                    transform:scale(0.9999);
 
                     path {
                         stroke: unset;
@@ -213,7 +215,7 @@
             box-shadow: 0 0 6px -1px rgb(140 146 163 / 50%);
             background-color: #ffffff;
             position: absolute;
-            padding:10px 12px;
+            padding: 10px 12px;
             font-weight: normal;
             font-style: normal;
             color: rgba(0, 0, 0, 0.8);
