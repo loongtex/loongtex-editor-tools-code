@@ -90,16 +90,16 @@
         position: absolute;
         top: 0px;
         left: 0px;
-        width: 40px;
+        width: auto;
         height: auto;
         display: flex;
         flex-direction: column;
         pointer-events: none;
-        padding-inline: 20px;
+        padding-inline:5px 20px;
         box-sizing: border-box;
 
         span {
-            display: block;
+            display: inline-block;
             height: 22px;
             line-height: 22px;
             font-size: 14px;

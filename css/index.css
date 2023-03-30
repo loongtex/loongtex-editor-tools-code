@@ -98,7 +98,7 @@
   position: absolute;
   top: 0px;
   left: 0px;
-  width: 40px;
+  width: auto;
   height: auto;
   display: -webkit-flex;
   display: -moz-box;
@@ -110,12 +110,12 @@
       -ms-flex-direction: column;
           flex-direction: column;
   pointer-events: none;
-  padding-inline: 20px;
+  padding-inline: 5px 20px;
   -moz-box-sizing: border-box;
        box-sizing: border-box;
 }
 .code-plus__outside .code-plus-line-number-es span {
-  display: block;
+  display: inline-block;
   height: 22px;
   line-height: 22px;
   font-size: 14px;
