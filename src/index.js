@@ -154,6 +154,8 @@ export default class CodeTool {
 
     wrapper.appendChild(languageMenu);
 
+
+    this.nodes.outside = outside;
     outside_container.appendChild(outside);
 
 
@@ -316,13 +318,16 @@ export default class CodeTool {
     wrapper.appendChild(lineNumberItem);
 
     lineNumberItem.addEventListener('click', () => {
-        this.displayLineNumber = !this.displayLineNumber;
+      this.displayLineNumber = !this.displayLineNumber;
 
-        if(this.displayLineNumber){
-          this.createLine();
-        }else{
-          this.removeLine();
-        }
+      if (this.displayLineNumber) {
+        this.createLine();
+
+
+      } else {
+        document.querySelector('.code-plus__outside').style.paddingLeft = 20 + 'px';
+        this.removeLine();
+      }
 
     })
 
@@ -846,11 +851,17 @@ export default class CodeTool {
       span.textContent = '1';
       this.nodes.lineNumbers.appendChild(span);
     }
+
+    if(document.querySelector('.code-plus__outside')){
+      const width = this.nodes.lineNumbers.clientWidth;
+      document.querySelector('.code-plus__outside').style.paddingLeft = width + 'px';
+    }
+   
   }
 
-  removeLine(){
+  removeLine() {
     const lineDom = this.nodes.lineNumbers;
-    while(lineDom.lastChild){
+    while (lineDom.lastChild) {
       lineDom.removeChild(lineDom.lastChild);
     }
   }
