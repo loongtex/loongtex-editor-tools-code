@@ -100,6 +100,7 @@
   position: absolute;
   top: 0px;
   left: 0px;
+  min-width: 40px;
   width: auto;
   height: auto;
   display: -webkit-flex;
@@ -112,7 +113,7 @@
       -ms-flex-direction: column;
           flex-direction: column;
   pointer-events: none;
-  padding-inline: 5px 20px;
+  padding-inline: 16px;
   -moz-box-sizing: border-box;
        box-sizing: border-box;
 }

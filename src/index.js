@@ -83,12 +83,14 @@ export default class CodeTool {
       drag: null
     };
 
+    this.config = config;
     console.log(data)
 
     this.data = {
       code: data.code || '',
       language: data.language || config.defaultLanguage,
       lineNumber: data.lineNumber || 0,
+      minWidth: data.width || config.minWidth,
     };
 
     this.languages = config.languages || this.defaultLanguages();
@@ -322,10 +324,8 @@ export default class CodeTool {
 
       if (this.displayLineNumber) {
         this.createLine();
-
-
       } else {
-        document.querySelector('.code-plus__outside').style.paddingLeft = 20 + 'px';
+        this.nodes.outside.style.paddingLeft = this.config.minWidth + 'px';
         this.removeLine();
       }
 
@@ -599,6 +599,7 @@ export default class CodeTool {
       code: codeWrapper.querySelector('.code-plus__inside').textContent,
       language: codeWrapper.querySelector('.code-plus-language-item').textContent,
       lineNumber: Math.floor(codeWrapper.querySelector('.cdx-input').clientHeight),
+      width: codeWrapper.querySelector('.code-plus-line-number-es').clientWidth,
     };
   }
 
@@ -852,9 +853,9 @@ export default class CodeTool {
       this.nodes.lineNumbers.appendChild(span);
     }
 
-    if(document.querySelector('.code-plus__outside')){
-      const width = this.nodes.lineNumbers.clientWidth;
-      document.querySelector('.code-plus__outside').style.paddingLeft = width + 'px';
+    if(this.nodes.outside){
+      const width = this.nodes.lineNumbers.clientWidth || this.data.minWidth;
+      this.nodes.outside.style.paddingLeft = width + 'px';
     }
    
   }

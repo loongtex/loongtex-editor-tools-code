@@ -92,12 +92,13 @@
         position: absolute;
         top: 0px;
         left: 0px;
+        min-width: 40px;
         width: auto;
         height: auto;
         display: flex;
         flex-direction: column;
         pointer-events: none;
-        padding-inline:5px 20px;
+        padding-inline:16px;
         box-sizing: border-box;
 
         span {
