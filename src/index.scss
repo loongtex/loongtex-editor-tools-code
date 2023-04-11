@@ -98,7 +98,7 @@
         display: flex;
         flex-direction: column;
         pointer-events: none;
-        padding-inline:16px;
+        padding-inline: 16px;
         box-sizing: border-box;
 
         span {
@@ -122,7 +122,7 @@
     border-radius: 4px;
     box-sizing: border-box;
     cursor: pointer;
-    transform:scale(0.9999);
+    transform: scale(0.9999);
 
     path {
         stroke: none !important;
@@ -167,7 +167,6 @@
         border-radius: 6px;
         padding: 6px;
         display: flex;
-        justify-content: space-between;
         position: relative;
 
         .code-plus-copy,
@@ -188,7 +187,7 @@
                     height: 10px;
                     opacity: 0;
                     transition: opacity ease 0.3s;
-                    transform:scale(0.9999);
+                    transform: scale(0.9999);
 
                     path {
                         stroke: unset;
@@ -261,6 +260,7 @@
 
         .code-plus-language-menu {
             position: relative;
+            margin-inline-end: 10px;
 
             .code-plus-language-item {
                 display: flex;
@@ -369,4 +369,13 @@
             }
         }
     }
+}
+
+.code-plus-title {
+    background: none;
+    outline: none;
+    border: none;
+    flex: 1;
+    max-width: min-content;
+    margin-inline-end: auto;
 }

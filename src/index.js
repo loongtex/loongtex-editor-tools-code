@@ -50,8 +50,9 @@ export default class CodeTool {
    * @param {object} options.api - Editor.js API
    * @param {boolean} options.readOnly - read only mode flag
    */
-  constructor({ data, config, api, readOnly }) {
+  constructor({ data, config, api, readOnly, block }) {
     this.api = api;
+    this.block = block;
     this.readOnly = readOnly;
 
     this.placeholder = this.api.i18n.t(config.placeholder || CodeTool.DEFAULT_PLACEHOLDER);
@@ -91,6 +92,7 @@ export default class CodeTool {
       language: data.language || config.defaultLanguage,
       lineNumber: data.lineNumber || 0,
       minWidth: data.width || config.minWidth,
+      title: data.title,
     };
 
     this.languages = config.languages || this.defaultLanguages();
@@ -343,6 +345,7 @@ export default class CodeTool {
 
     const codePlusLibraryMenu = this.make('div', ['code-plus-library-menu', this.CSS.language]),
       selectLangueMenu = this.make('div', 'code-plus-select-language-menu'),
+      codeTitle = this.make('input','code-plus-title'),
       languageMenu = this.make('div', 'code-plus-language-menu'),
       languageItem = this.make('div', 'code-plus-language-item'),
       languageText = this.make('span'),
@@ -459,10 +462,25 @@ export default class CodeTool {
       if (document.body.contains(this.nodes.languageOutside)) {
         document.body.removeChild(this.nodes.languageOutside);
       }
+      this.block.dispatchChange();
 
       event.preventDefault();
       event.stopPropagation();
     })
+
+    codeTitle.placeholder = '请输入代码名称';
+    codeTitle.value = this.data.title || '';
+    codeTitle.addEventListener('keydown', (event) => {
+         console.log('event',event)
+         // 判断是否按下了回车键
+         if (event.key === 'Enter') {
+            this.data.title = event.target.value;
+            event.target.blur();
+            this.block.dispatchChange();
+         }
+    });
+
+    selectLangueMenu.appendChild(codeTitle);
 
 
 
@@ -600,6 +618,7 @@ export default class CodeTool {
       language: codeWrapper.querySelector('.code-plus-language-item').textContent,
       lineNumber: Math.floor(codeWrapper.querySelector('.cdx-input').clientHeight),
       width: codeWrapper.querySelector('.code-plus-line-number-es').clientWidth,
+      title: codeWrapper.querySelector('.code-plus-title').textContent,
     };
   }
 

@@ -197,10 +197,6 @@
   display: -moz-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-justify-content: space-between;
-     -moz-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
   position: relative;
 }
 .code-plus-library-menu .code-plus-select-language-menu .code-plus-copy,
@@ -329,6 +325,9 @@
 }
 .code-plus-library-menu .code-plus-select-language-menu .code-plus-language-menu {
   position: relative;
+  -webkit-margin-end: 10px;
+     -moz-margin-end: 10px;
+          margin-inline-end: 10px;
 }
 .code-plus-library-menu .code-plus-select-language-menu .code-plus-language-menu .code-plus-language-item {
   display: -webkit-flex;
@@ -447,4 +446,20 @@
 }
 .code-plus-language-outside .code-plus-language-options .code-plus-language-option:hover {
   background-color: #EAEAEA;
+}
+
+.code-plus-title {
+  background: none;
+  outline: none;
+  border: none;
+  -webkit-flex: 1;
+     -moz-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  max-width: -webkit-min-content;
+  max-width: -moz-min-content;
+  max-width: min-content;
+  -webkit-margin-end: auto;
+     -moz-margin-end: auto;
+          margin-inline-end: auto;
 }
