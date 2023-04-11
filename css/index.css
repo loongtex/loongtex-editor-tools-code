@@ -456,9 +456,9 @@
      -moz-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
-  max-width: -webkit-min-content;
-  max-width: -moz-min-content;
-  max-width: min-content;
+  min-width: -webkit-min-content;
+  min-width: -moz-min-content;
+  min-width: min-content;
   -webkit-margin-end: auto;
      -moz-margin-end: auto;
           margin-inline-end: auto;
