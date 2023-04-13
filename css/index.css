@@ -5,7 +5,6 @@
   line-height: 22px;
   font-size: 14px;
   box-shadow: none;
-  white-space: pre;
   border: none;
   outline: 0;
   min-width: 100%;
@@ -286,13 +285,12 @@
   font-style: normal;
   color: rgba(0, 0, 0, 0.8);
   border-radius: 0.2857rem;
-  opacity: 0;
   -webkit-transition: opacity ease 0.3s;
   -o-transition: opacity ease 0.3s;
   -moz-transition: opacity ease 0.3s;
   transition: opacity ease 0.3s;
   top: 0;
-  right: 40px;
+  right: -82px;
   -moz-box-sizing: border-box;
        box-sizing: border-box;
   font-size: 12px;
@@ -308,9 +306,8 @@
 }
 .code-plus-library-menu .code-plus-select-language-menu .code-plus-copy-info::before {
   top: 50%;
-  right: -0.325em;
+  left: -0.325em;
   bottom: auto;
-  left: auto;
   margin-top: -0.325em;
   position: absolute;
   content: "";
@@ -466,4 +463,71 @@
   font-size: 12px;
   color: #B3B3B3;
   margin-left: 7px;
+}
+
+.code-plus-pre-input {
+  width: 25px;
+  height: 15px;
+  background-color: rgb(230, 230, 230);
+  position: relative;
+  cursor: pointer;
+  /* 外观 */
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border-radius: 15px;
+  -webkit-transition: all 500ms;
+  -o-transition: all 500ms;
+  -moz-transition: all 500ms;
+  transition: all 500ms;
+}
+
+.code-plus-pre-input ::before {
+  width: 25px;
+  height: 15px;
+  background-color: rgb(230, 230, 230);
+  position: absolute;
+  cursor: pointer;
+  content: "";
+  border-radius: 7px;
+  -webkit-transition: all 300ms cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 300ms cubic-bezier(0.075, 0.82, 0.165, 1);
+  -moz-transition: all 300ms cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition: all 300ms cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.code-plus-pre-input::after {
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  width: 13px;
+  height: 13px;
+  border-radius: 7px;
+  background-color: #fff;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+  content: "";
+  -webkit-transition: all 300ms cubic-bezier(0.075, 0.82, 0.165, 1);
+  -o-transition: all 300ms cubic-bezier(0.075, 0.82, 0.165, 1);
+  -moz-transition: all 300ms cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition: all 300ms cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.code-plus-pre-input:checked {
+  background-color: darkcyan;
+}
+
+.code-plus-pre-input:checked::after {
+  -webkit-transform: translateX(10px);
+     -moz-transform: translateX(10px);
+      -ms-transform: translateX(10px);
+       -o-transform: translateX(10px);
+          transform: translateX(10px);
+}
+
+.code-plus-pre-input:checked::before {
+  -webkit-transform: scale(0);
+     -moz-transform: scale(0);
+      -ms-transform: scale(0);
+       -o-transform: scale(0);
+          transform: scale(0);
 }

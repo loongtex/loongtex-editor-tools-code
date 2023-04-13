@@ -4,7 +4,7 @@
 import '../css/index.css';
 import '../css/prism.css'
 import { _getFrontOffset, selection, _getRealDomAndOffset } from './utils/string';
-import { IconBrackets, IconStar } from '@codexteam/icons';
+import { IconBrackets, IconStar, IconEtcHorisontal } from '@codexteam/icons';
 import Prism from 'prismjs'
 const getFrontOffset = _getFrontOffset();
 const getRealDomAndOffset = _getRealDomAndOffset();
@@ -93,6 +93,8 @@ export default class CodeTool {
       lineNumber: data.lineNumber || 0,
       minWidth: data.width || config.minWidth,
       title: data.title,
+      word_wrap: typeof data.word_wrap === Boolean ? data.word_wrap : config.word_wrap,
+
     };
 
     this.languages = config.languages || this.defaultLanguages();
@@ -137,6 +139,7 @@ export default class CodeTool {
     inside.setAttribute("contenteditable", "true");
     inside.setAttribute("spellcheck", false)
     inside.setAttribute("data-placeholder", this.placeholder);
+
     if (this.data.language && this.data.language !== '纯文本') {
       inside.innerHTML = this.generateHtml(this.data.language.toLocaleLowerCase())
     } else {
@@ -301,6 +304,8 @@ export default class CodeTool {
     this.nodes.div = inside;
     this.displayLineNumber && this.createLine();
 
+    this.checkWrap();
+
 
     return wrapper;
   }
@@ -310,7 +315,11 @@ export default class CodeTool {
     const wrapper = this.make('div', 'ce-popover__item-wrapper'),
       lineNumberItem = this.make('div', 'ce-popover__item'),
       label = this.make('div', 'ce-popover__item-label'),
-      icon = this.make('div', 'ce-popover__item-icon');
+      icon = this.make('div', 'ce-popover__item-icon'),
+      preWrapper = this.make('div', 'ce-popover__item'),
+      preIcon = this.make('div', 'ce-popover__item-icon'),
+      preText = this.make('div', 'ce-popover__item-label'),
+      pre_input = this.make('input', 'code-plus-pre-input');
 
     const text = document.createTextNode('Line Number');
     icon.innerHTML = IconStar;
@@ -319,7 +328,29 @@ export default class CodeTool {
     lineNumberItem.appendChild(icon);
     lineNumberItem.appendChild(label);
 
+    preIcon.innerHTML = IconEtcHorisontal;
+    preText.textContent = 'word wrap';
+    pre_input.setAttribute('type', 'checkbox');
+    pre_input.setAttribute('checked', this.data.word_wrap);
+    preWrapper.appendChild(preIcon);
+    preWrapper.appendChild(preText);
+    preWrapper.appendChild(pre_input);
+    preWrapper.addEventListener('click', (event) => {
+      pre_input.checked = !pre_input.checked;
+      this.data.word_wrap = pre_input.checked;
+      this.checkWrap();
+      event.stopPropagation();
+    });
+
+    pre_input.addEventListener('click', (event) => {
+      pre_input.checked = !pre_input.checked;
+      this.data.word_wrap = pre_input.checked;
+      this.checkWrap();
+      event.stopPropagation();
+    })
+
     wrapper.appendChild(lineNumberItem);
+    wrapper.appendChild(preWrapper);
 
     lineNumberItem.addEventListener('click', () => {
       this.displayLineNumber = !this.displayLineNumber;
@@ -345,7 +376,7 @@ export default class CodeTool {
 
     const codePlusLibraryMenu = this.make('div', ['code-plus-library-menu', this.CSS.language]),
       selectLangueMenu = this.make('div', 'code-plus-select-language-menu'),
-      codeTitle = this.make('input','code-plus-title'),
+      codeTitle = this.make('input', 'code-plus-title'),
       languageMenu = this.make('div', 'code-plus-language-menu'),
       languageItem = this.make('div', 'code-plus-language-item'),
       languageText = this.make('span'),
@@ -472,13 +503,13 @@ export default class CodeTool {
     codeTitle.spellcheck = false;
     codeTitle.value = this.data.title || '';
     codeTitle.addEventListener('keydown', (event) => {
-         console.log('event',event)
-         // 判断是否按下了回车键
-         if (event.key === 'Enter') {
-            this.data.title = event.target.value;
-            event.target.blur();
-            this.block.dispatchChange();
-         }
+      console.log('event', event)
+      // 判断是否按下了回车键
+      if (event.key === 'Enter') {
+        this.data.title = event.target.value;
+        event.target.blur();
+        this.block.dispatchChange();
+      }
     });
 
     selectLangueMenu.appendChild(codeTitle);
@@ -620,6 +651,7 @@ export default class CodeTool {
       lineNumber: Math.floor(codeWrapper.querySelector('.cdx-input').clientHeight),
       width: codeWrapper.querySelector('.code-plus-line-number-es').clientWidth,
       title: codeWrapper.querySelector('.code-plus-title').value,
+      word_wrap: this.data.word_wrap,
     };
   }
 
@@ -873,17 +905,27 @@ export default class CodeTool {
       this.nodes.lineNumbers.appendChild(span);
     }
 
-    if(this.nodes.outside){
+    if (this.nodes.outside) {
       const width = this.nodes.lineNumbers.clientWidth || this.data.minWidth;
       this.nodes.outside.style.paddingLeft = width + 'px';
     }
-   
+
   }
 
   removeLine() {
     const lineDom = this.nodes.lineNumbers;
     while (lineDom.lastChild) {
       lineDom.removeChild(lineDom.lastChild);
+    }
+  }
+
+  checkWrap() {
+    if (this.data.word_wrap) {
+      this.nodes.div.style.whiteSpace = 'pre-wrap';
+      this.nodes.div.style.wordBreak = 'break-all';
+    } else {
+      this.nodes.div.style.whiteSpace = 'pre';
+      this.nodes.div.style.wordBreak = 'break-all';
     }
   }
 
