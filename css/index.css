@@ -72,6 +72,7 @@
   padding-bottom: 40px;
   overflow-y: hidden;
   position: relative;
+  line-height: normal;
   -webkit-mask: -webkit-linear-gradient(bottom, transparent 1%, #fff 99%), -webkit-linear-gradient(right, #000, #000);
           mask: linear-gradient(to top, transparent 1%, #fff 99%), linear-gradient(270deg, #000, #000);
   -webkit-mask-size: 100% 40px, 100% -webkit-calc(100% - 40px);
