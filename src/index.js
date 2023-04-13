@@ -346,7 +346,6 @@ export default class CodeTool {
       pre_input.checked = !pre_input.checked;
       this.data.word_wrap = pre_input.checked;
       this.checkWrap();
-      event.stopPropagation();
     })
 
     wrapper.appendChild(lineNumberItem);
