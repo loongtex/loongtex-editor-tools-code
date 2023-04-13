@@ -469,6 +469,7 @@ export default class CodeTool {
     })
 
     codeTitle.placeholder = '请输入代码名称';
+    codeTitle.spellcheck = false;
     codeTitle.value = this.data.title || '';
     codeTitle.addEventListener('keydown', (event) => {
          console.log('event',event)
