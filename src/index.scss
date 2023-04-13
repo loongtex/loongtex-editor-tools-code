@@ -7,6 +7,7 @@
     box-shadow: none;
     white-space: pre;
     border: none;
+    outline: 0;
     min-width: 100%;
     user-select: text;
     padding: 0;
@@ -181,6 +182,8 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                color: #B3B3B3;
+
 
                 &:last-child {
                     width: 10px;
@@ -188,6 +191,7 @@
                     // opacity: 0;
                     transition: opacity ease 0.3s;
                     transform: scale(0.9999);
+                    margin-left: 10px;
 
                     path {
                         stroke: unset;
@@ -379,4 +383,7 @@
     min-width: min-content;
     margin-inline-end: auto;
     font-size: 12px;
+    color: #B3B3B3;
+    margin-left: 7px;
+
 }
