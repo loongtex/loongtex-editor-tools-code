@@ -54,7 +54,7 @@
     overflow-x: auto;
     box-sizing: border-box;
     height: 100%;
-    min-height: 24px;
+    min-height: 22px;
     max-height: calc(22px * 20);
     padding-left: 40px;
     padding-right: 40px;
@@ -185,7 +185,7 @@
                 &:last-child {
                     width: 10px;
                     height: 10px;
-                    opacity: 0;
+                    // opacity: 0;
                     transition: opacity ease 0.3s;
                     transform: scale(0.9999);
 
@@ -204,7 +204,7 @@
             align-items: center;
             justify-content: center;
             transition: all ease 0.3s;
-            opacity: 0;
+            // opacity: 0;
 
             &:hover {
                 background-color: #EAEAEA;

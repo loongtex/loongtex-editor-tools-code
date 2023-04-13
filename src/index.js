@@ -825,20 +825,20 @@ export default class CodeTool {
     this.nodes.languageOptionContainer.appendChild(fragment)
   }
   wrapperMouseEnter(event) {
-    event.preventDefault();
-    event.stopPropagation()
-    if ((this.nodes.copy.style.opacity === '' || this.nodes.copy.style.opacity === '0')) {
-      this.nodes.copy.style.opacity = '1';
-      this.nodes.languageItem_svg.style.opacity = '1'
-    }
+    // event.preventDefault();
+    // event.stopPropagation()
+    // if ((this.nodes.copy.style.opacity === '' || this.nodes.copy.style.opacity === '0')) {
+    //   this.nodes.copy.style.opacity = '1';
+    //   this.nodes.languageItem_svg.style.opacity = '1'
+    // }
   }
   wrapperMouseLeave(event) {
-    event.preventDefault();
-    event.stopPropagation()
-    if ((this.nodes.copy.style.opacity === '1' && !document.body.contains(this.nodes.languageOutside))) {
-      this.nodes.copy.style.opacity = '0';
-      this.nodes.languageItem_svg.style.opacity = '0'
-    }
+    // event.preventDefault();
+    // event.stopPropagation()
+    // if ((this.nodes.copy.style.opacity === '1' && !document.body.contains(this.nodes.languageOutside))) {
+    //   this.nodes.copy.style.opacity = '0';
+    //   this.nodes.languageItem_svg.style.opacity = '0'
+    // }
   }
 
   createLine() {
