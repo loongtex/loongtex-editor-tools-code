@@ -439,7 +439,7 @@ export default class CodeTool {
     })
 
 
-    copyInfo.textContent = '点击复制'
+    copyInfo.textContent = '拷贝'
     languageOptions.appendChild(input);
 
     let arr = []
@@ -572,7 +572,7 @@ export default class CodeTool {
 
 
         svgWrapper.innerHTML = successcopy;
-        copyInfo.textContent = '复制成功';
+        copyInfo.textContent = '拷贝成功';
 
         if (copyInfo.classList.contains('hidden') && type === 'click') {
           copyInfo.classList.remove('hidden');
@@ -597,7 +597,7 @@ export default class CodeTool {
 
     copyInfo.addEventListener('transitionend', (ev) => {
       if (ev.target.classList.contains('hidden')) {
-        copyInfo.textContent = '点击复制';
+        copyInfo.textContent = '拷贝';
       }
     })
 
