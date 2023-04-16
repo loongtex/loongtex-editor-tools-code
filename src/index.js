@@ -185,6 +185,8 @@ export default class CodeTool {
     dragBack.addEventListener('dblclick', (ev) => {
       const currentBlock = this.api.blocks.getCurrentBlockIndex();
       const currentBlockId = this.api.blocks.getBlockByIndex(currentBlock);
+
+      console.log(currentBlockId.holder)
       if (outside.style.maxHeight === 'none') {
         // 收起
         outside.style.maxHeight = '440px';
