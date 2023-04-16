@@ -649,6 +649,7 @@ export default class CodeTool {
       language: codeWrapper.querySelector('.code-plus-language-item').textContent,
       lineNumber: Math.floor(codeWrapper.querySelector('.cdx-input').clientHeight),
       width: codeWrapper.querySelector('.code-plus-line-number-es').clientWidth,
+      contentHeight: codeWrapper.querySelector('.cdx-input').clientHeight,
       title: codeWrapper.querySelector('.code-plus-title').value,
       word_wrap: this.data.word_wrap,
     };
