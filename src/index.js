@@ -55,7 +55,6 @@ export default class CodeTool {
     this.block = block;
     this.readOnly = readOnly;
 
-    console.log('block', block, data, api, config)
     this.placeholder = this.api.i18n.t(config.placeholder || CodeTool.DEFAULT_PLACEHOLDER);
 
     // 点击时的滚动事件
@@ -90,7 +89,6 @@ export default class CodeTool {
     };
 
     this.config = config;
-    console.log(data)
 
     this.data = {
       code: data.code || '',
@@ -100,7 +98,7 @@ export default class CodeTool {
       contentHeight: data.contentHeight || 0,
       title: data.title,
       word_wrap: typeof data.word_wrap === Boolean ? data.word_wrap : config.word_wrap,
-
+      lineHeights: data.lineHeights || [],
     };
 
     this.languages = config.languages || this.defaultLanguages();
@@ -139,7 +137,8 @@ export default class CodeTool {
       drag = this.make('div', 'code-plus-drag'),
       dragBack = this.make('div', 'code-plus-drag-back'),
       outside = this.make('div', [this.CSS.divOutside]),
-      lineNumbers = this.make('div', ['code-plus-line-number-es']);
+      lineNumbers = this.make('div', ['code-plus-line-number-es']),
+      lineNumberSizer = this.make('span', '');
 
     wrapper.style.position = "relative";
     inside.setAttribute("contenteditable", "true");
@@ -153,7 +152,8 @@ export default class CodeTool {
     }
 
 
-
+    this.nodes.lineNumberSizer = lineNumberSizer;
+    inside.appendChild(lineNumberSizer);
 
     if (this.readOnly) {
       inside.setAttribute("contenteditable", false);
@@ -163,6 +163,7 @@ export default class CodeTool {
 
     this.nodes.lineNumbers = lineNumbers;
     outside.appendChild(lineNumbers);
+
     outside.appendChild(inside);
 
     wrapper.appendChild(languageMenu);
@@ -186,7 +187,6 @@ export default class CodeTool {
       const currentBlock = this.api.blocks.getCurrentBlockIndex();
       const currentBlockId = this.api.blocks.getBlockByIndex(currentBlock);
 
-      console.log(currentBlockId.holder)
       if (outside.style.maxHeight === 'none') {
         // 收起
         outside.style.maxHeight = '440px';
@@ -320,6 +320,7 @@ export default class CodeTool {
 
     this.nodes.div = inside;
     this.displayLineNumber && this.createLine();
+    this.displayLineNumber && this.setLineNumbersHeight();
 
     this.checkWrap();
 
@@ -353,16 +354,21 @@ export default class CodeTool {
     preWrapper.appendChild(preText);
     preWrapper.appendChild(pre_input);
     preWrapper.addEventListener('click', (event) => {
-      pre_input.checked = !pre_input.checked;
+      pre_input.checked = !this.data.word_wrap;
       this.data.word_wrap = pre_input.checked;
       this.checkWrap();
+      this.setLineNumbers(this.nodes.div.textContent);
+      this.setLineNumbersHeight();
       event.stopPropagation();
     });
 
     pre_input.addEventListener('click', (event) => {
-      pre_input.checked = !pre_input.checked;
+      pre_input.checked = !this.data.word_wrap;
       this.data.word_wrap = pre_input.checked;
       this.checkWrap();
+      this.setLineNumbers(this.nodes.div.textContent);
+      this.setLineNumbersHeight();
+      event.stopPropagation();
     })
 
     wrapper.appendChild(lineNumberItem);
@@ -373,6 +379,7 @@ export default class CodeTool {
 
       if (this.displayLineNumber) {
         this.createLine();
+        this.setLineNumbersHeight();
       } else {
         this.nodes.outside.style.paddingLeft = this.config.minWidth + 'px';
         this.removeLine();
@@ -519,7 +526,6 @@ export default class CodeTool {
     codeTitle.spellcheck = false;
     codeTitle.value = this.data.title || '';
     codeTitle.addEventListener('keydown', (event) => {
-      console.log('event', event)
       // 判断是否按下了回车键
       if (event.key === 'Enter') {
         this.data.title = event.target.value;
@@ -576,7 +582,6 @@ export default class CodeTool {
 
         var timer = setTimeout(() => {
           if (copyInfo.classList.contains('visible')) {
-            console.log('>>>>>>>>>>>>>>>>>')
             copyInfo.classList.remove('visible');
             copyInfo.classList.add('hidden');
             clearTimeout(timer);
@@ -669,6 +674,7 @@ export default class CodeTool {
       contentHeight: codeWrapper.querySelector('.cdx-input').clientHeight,
       title: codeWrapper.querySelector('.code-plus-title').value,
       word_wrap: this.data.word_wrap,
+      lineHeights: this.data.lineHeights,
     };
   }
 
@@ -830,6 +836,7 @@ export default class CodeTool {
         this.nodes.div.textContent = textContext;
       } else {
         const realContent = Prism.highlight(textContext, Prism.languages[this.data.language.toLocaleLowerCase()], this.data.language.toLocaleLowerCase());
+
         this.nodes.div.innerHTML = realContent;
 
       }
@@ -848,6 +855,8 @@ export default class CodeTool {
 
     this.TextAreaWrap.MaxHeight = this.nodes.div.getBoundingClientRect().height;
     this.createLine();
+    this.setLineNumbers(this.nodes.div.textContent);
+    this.setLineNumbersHeight();
   }
 
   languageMenuClick(event) {
@@ -944,6 +953,50 @@ export default class CodeTool {
       this.nodes.div.style.whiteSpace = 'pre';
       this.nodes.div.style.wordBreak = 'break-all';
     }
+  }
+
+  setLineNumbers(textContext) {
+
+    textContext ? textContext : this.nodes.div.textContent;
+    var NEW_LINE_EXP = /\n(?!$)/g;
+
+    var codeLines = textContext.split(NEW_LINE_EXP);
+    var lineHeights = [];
+    var oneLinerHeight = 22;
+    var lineNumberSizer = this.nodes.lineNumberSizer;
+
+    if (!this.nodes.div.contains(lineNumberSizer)) {
+      this.nodes.div.appendChild(lineNumberSizer);
+    }
+
+    lineHeights[codeLines.length - 1] = undefined;
+
+    codeLines.forEach((line, index) => {
+      if (line && line.length > 1) {
+        var e = lineNumberSizer.appendChild(document.createElement('span'));
+        e.style.display = 'block';
+        e.textContent = line
+      } else {
+        lineHeights[index] = oneLinerHeight;
+      }
+    })
+
+    var childIndex = 0;
+    for (var i = 0; i < lineHeights.length; i++) {
+      if (lineHeights[i] === undefined) {
+        lineHeights[i] = lineNumberSizer.children[childIndex++].getBoundingClientRect().height;
+      }
+    }
+
+    lineNumberSizer.innerHTML = '';
+
+    this.data.lineHeights = lineHeights;
+  }
+
+  setLineNumbersHeight() {
+   this.data.lineHeights.forEach((lineHeight, index) => {
+      this.nodes.lineNumbers.children[index].style.height = lineHeight + 'px';
+    })
   }
 
 }
