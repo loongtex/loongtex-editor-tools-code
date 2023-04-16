@@ -97,6 +97,7 @@ export default class CodeTool {
       lineNumber: data.lineNumber || 0,
       minWidth: data.width || config.minWidth,
       contentHeight: data.contentHeight || 0,
+      ID: data.ID || '',
       title: data.title,
       word_wrap: typeof data.word_wrap === Boolean ? data.word_wrap : config.word_wrap,
 
@@ -185,7 +186,7 @@ export default class CodeTool {
       if (outside.style.maxHeight === 'none') {
         // 收起
         outside.style.maxHeight = '440px';
-        this.dragDbclick(ev.target, false, this.data.contentHeight, 440, ev.target.getBoundingClientRect().top);
+        this.dragDbclick(ev.target, false, this.data.contentHeight, this.data.ID);
 
       } else {
         // 展开
