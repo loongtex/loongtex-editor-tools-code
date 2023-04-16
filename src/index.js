@@ -811,6 +811,7 @@ export default class CodeTool {
   }
 
   insideInput(event, type) {
+    event.stopPropagation();
     if (!this.isInput) return
     const endContainer = selection.getEndContainer();
     let inset = ''
