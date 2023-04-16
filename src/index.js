@@ -185,7 +185,7 @@ export default class CodeTool {
       if (outside.style.maxHeight === 'none') {
         // 收起
         outside.style.maxHeight = '440px';
-        this.dragDbclick(ev.target, false, this.data.contentHeight, 440);
+        this.dragDbclick(ev.target, false, this.data.contentHeight, 440, ev.target.getBoundingClientRect().top);
 
       } else {
         // 展开
