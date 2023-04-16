@@ -60,6 +60,10 @@ export default class CodeTool {
     // 点击时的滚动事件
     this.dragMove = config.dragMoveer.dragMove;
 
+    // 双击时的
+
+    this.dragDbclick = config.dragMoveer.dragDbclick;
+
     this.CSS = {
       baseClass: this.api.styles.block,
       input: this.api.styles.input,
@@ -176,12 +180,18 @@ export default class CodeTool {
 
     }
 
-    dragBack.addEventListener('dblclick', () => {
+    dragBack.addEventListener('dblclick', (ev) => {
       if (outside.style.maxHeight === 'none') {
+        // 收起
         outside.style.maxHeight = '440px';
+        this.dragDbclick(ev.target, false);
+
       } else {
+        // 展开
         outside.style.maxHeight = 'none';
+        this.dragDbclick(ev.target, true);
       }
+      // 当前点击的元素,是否展开
     })
 
     dragBack.addEventListener('mousedown', (ev) => {
