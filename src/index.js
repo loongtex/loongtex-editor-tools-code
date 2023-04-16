@@ -55,6 +55,7 @@ export default class CodeTool {
     this.block = block;
     this.readOnly = readOnly;
 
+    console.log('block', block, data, api, config)
     this.placeholder = this.api.i18n.t(config.placeholder || CodeTool.DEFAULT_PLACEHOLDER);
 
     // 点击时的滚动事件
@@ -97,7 +98,6 @@ export default class CodeTool {
       lineNumber: data.lineNumber || 0,
       minWidth: data.width || config.minWidth,
       contentHeight: data.contentHeight || 0,
-      ID: data.ID || '',
       title: data.title,
       word_wrap: typeof data.word_wrap === Boolean ? data.word_wrap : config.word_wrap,
 
@@ -183,16 +183,19 @@ export default class CodeTool {
     }
 
     dragBack.addEventListener('dblclick', (ev) => {
+      const currentBlock = this.api.blocks.getCurrentBlockIndex();
+      const currentBlockId = this.api.blocks.getBlockByIndex(currentBlock);
       if (outside.style.maxHeight === 'none') {
         // 收起
         outside.style.maxHeight = '440px';
-        this.dragDbclick(ev.target, false, this.data.contentHeight, this.data.ID);
+        this.dragDbclick(ev.target, false, this.data.contentHeight, currentBlockId.holder);
 
       } else {
         // 展开
         outside.style.maxHeight = 'none';
         this.dragDbclick(ev.target, true);
       }
+
       // 当前点击的元素,是否展开
     })
 
