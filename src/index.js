@@ -170,6 +170,10 @@ export default class CodeTool {
 
 
     this.nodes.outside = outside;
+
+    if(this.data.contentHeight){
+      outside.style.maxHeight = this.data.contentHeight + "px";
+    }
     outside_container.appendChild(outside);
 
 
@@ -671,7 +675,7 @@ export default class CodeTool {
       language: codeWrapper.querySelector('.code-plus-language-item').textContent,
       lineNumber: Math.floor(codeWrapper.querySelector('.cdx-input').clientHeight),
       width: codeWrapper.querySelector('.code-plus-line-number-es').clientWidth,
-      contentHeight: codeWrapper.querySelector('.cdx-input').clientHeight,
+      contentHeight: codeWrapper.querySelector('.code-plus__outside').clientHeight,
       title: codeWrapper.querySelector('.code-plus-title').value,
       word_wrap: this.data.word_wrap,
       lineHeights: this.data.lineHeights,
