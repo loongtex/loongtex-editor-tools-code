@@ -192,7 +192,7 @@ export default class CodeTool {
        this.addMask();
     }
 
-    if( ((this.data.contentHeight - 40) < this.data.lineNumber) && this.data.contentHeight !== 0){
+    if( ((this.data.contentHeight - 40) <= this.data.lineNumber) && this.data.contentHeight !== 0){
       this.addDragBack();
     }
 
@@ -871,7 +871,7 @@ export default class CodeTool {
       this.addDragBack();
     }
 
-    if((this.nodes.outside.clientHeight > this.nodes.div.clientHeight)){
+    if((this.nodes.outside.clientHeight >= this.nodes.div.clientHeight)){
       this.removeDragBack();
       this.removeMask();
     }
