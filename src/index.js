@@ -172,8 +172,10 @@ export default class CodeTool {
 
     this.nodes.outside = outside;
 
-    if(this.data.contentHeight){
-      outside.style.maxHeight = this.data.contentHeight + "px";
+    console.log(this.data.unfold)
+    // 是否展开
+    if(this.data.unfold){
+      outside.style.maxHeight = 'auto';
     }
     outside_container.appendChild(outside);
 
@@ -183,8 +185,9 @@ export default class CodeTool {
 
     this.nodes.drag = drag;
     this.nodes.dragBack = dragBack;
-    console.log(this.data.unfold)
-    if (this.TextAreaWrap.MaxHeight > this.TextAreaWrap.MinHeight && this.data.unfold) {
+
+    // 需要折叠就加上折叠条
+    if (!this.data.unfold) {
        this.addDragBack();
     }
 
@@ -195,15 +198,19 @@ export default class CodeTool {
       if (outside.style.maxHeight === 'none') {
         // 收起
         outside.style.maxHeight = '440px';
-        this.dragDbclick(ev.target, false, this.data.contentHeight, currentBlockId.holder);
         this.addDragBack();
-        this.data.unfold = true;
+        this.data.unfold = false;
+        console.log("收起")
+        this.dragDbclick(ev.target, false, this.data.contentHeight, currentBlockId.holder);
+     
       } else {
         // 展开
         outside.style.maxHeight = 'none';
         this.removeDragBack();
+        this.data.unfold = true;
+        console.log("展开")
         this.dragDbclick(ev.target, true);
-        this.data.unfold = false;
+       
       }
 
       // 当前点击的元素,是否展开
@@ -855,15 +862,11 @@ export default class CodeTool {
       })
     })
 
-
-    // 是否需要展示拖条
-    if (!this.nodes.outside_container.contains(this.nodes.dragBack) && this.nodes.div.getBoundingClientRect().height > this.TextAreaWrap.MinHeight && this.data.unfold) {
-      this.nodes.outside_container.appendChild(this.nodes.dragBack)
-    } else if (this.nodes.div.getBoundingClientRect().height <= this.TextAreaWrap.MinHeight && this.nodes.outside_container.contains(this.nodes.dragBack)) {
-      this.nodes.outside_container.removeChild(this.nodes.dragBack);
+  console.log(this.data.unfold)
+    // 是否展开
+    if(!this.data.unfold){
+      this.addDragBack();
     }
-
-    this.TextAreaWrap.MaxHeight = this.nodes.div.getBoundingClientRect().height;
     this.createLine();
     this.setLineNumbers(this.nodes.div.textContent);
     this.setLineNumbersHeight();
@@ -1010,14 +1013,16 @@ export default class CodeTool {
   }
 
   addDragBack(){
-    if(this.nodes.outside_container.contains(this.nodes.dragBack)){
+    if(!this.nodes.outside_container.contains(this.nodes.dragBack)){
       this.nodes.outside_container.appendChild(this.nodes.dragBack);
+      this.nodes.outside.classList.add('mask');
 
     }
   }
   removeDragBack(){
     if(this.nodes.outside_container.contains(this.nodes.dragBack)){
       this.nodes.outside_container.removeChild(this.nodes.dragBack);
+      this.nodes.outside.classList.remove('mask');
     }
   }
 }

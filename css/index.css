@@ -71,6 +71,9 @@
   overflow-y: hidden;
   position: relative;
   line-height: normal;
+  /* 整个滚动条 */
+}
+.code-plus__outside.mask {
   -webkit-mask: -webkit-linear-gradient(bottom, transparent 1%, #fff 99%), -webkit-linear-gradient(right, #000, #000);
           mask: linear-gradient(to top, transparent 1%, #fff 99%), linear-gradient(270deg, #000, #000);
   -webkit-mask-size: 100% 40px, 100% -webkit-calc(100% - 40px);
@@ -80,7 +83,6 @@
           mask-position: bottom, top;
   -webkit-mask-repeat: no-repeat;
           mask-repeat: no-repeat;
-  /* 整个滚动条 */
 }
 .code-plus__outside::-webkit-scrollbar {
   /* 对应纵向滚动条的宽度 */
