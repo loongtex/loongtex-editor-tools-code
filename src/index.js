@@ -868,7 +868,7 @@ export default class CodeTool {
       this.addDragBack();
     }
     this.TextAreaWrap.MaxHeight = this.nodes.div.clientHeight;
-    this.createLine();
+    this.createLine(this.TextAreaWrap.MaxHeight);
     this.setLineNumbers(this.nodes.div.textContent);
     this.setLineNumbersHeight();
     this.createLine()
@@ -915,9 +915,9 @@ export default class CodeTool {
     // }
   }
 
-  createLine() {
+  createLine(height = 0) {
     const nodeLen = this.nodes.lineNumbers.childNodes.length;
-    const vnodeLen = this.data.lineHeights.length === 0 ? Math.ceil(this.TextAreaWrap.MaxHeight / 22): this.data.lineHeights.length;
+    const vnodeLen = height === 0 ? Math.ceil(this.TextAreaWrap.MaxHeight / 22): this.data.lineHeights.length;
     // 分情况
     // 如果nodelen大于vnodelen了,说明是删除
     if (nodeLen > vnodeLen) {
