@@ -175,7 +175,7 @@ export default class CodeTool {
     console.log(this.data.unfold)
     // 是否展开
     if(this.data.unfold){
-      outside.style.maxHeight = 'auto';
+      outside.style.maxHeight = 'none';
     }
     outside_container.appendChild(outside);
 
