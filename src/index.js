@@ -189,8 +189,11 @@ export default class CodeTool {
     // 需要折叠就加上折叠条
     console.log(this.data.contentHeight , this.data.lineNumber)
     if (!this.data.unfold && ((this.data.contentHeight - 40) < this.data.lineNumber) && this.data.contentHeight !== 0) {
-       this.addDragBack();
        this.addMask();
+    }
+
+    if( ((this.data.contentHeight - 40) < this.data.lineNumber) && this.data.contentHeight !== 0){
+      this.addDragBack();
     }
 
     dragBack.addEventListener('dblclick', (ev) => {
