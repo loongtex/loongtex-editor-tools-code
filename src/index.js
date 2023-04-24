@@ -187,8 +187,10 @@ export default class CodeTool {
     this.nodes.dragBack = dragBack;
 
     // 需要折叠就加上折叠条
-    if (!this.data.unfold) {
+    console.log(this.data.contentHeight , this.data.lineNumber)
+    if (!this.data.unfold && ((this.data.contentHeight) < this.data.lineNumber) && this.data.contentHeight !== 0) {
        this.addDragBack();
+       this.addMask();
     }
 
     dragBack.addEventListener('dblclick', (ev) => {
@@ -198,17 +200,13 @@ export default class CodeTool {
       if (outside.style.maxHeight === 'none') {
         // 收起
         outside.style.maxHeight = '440px';
-        this.addDragBack();
         this.data.unfold = false;
-        console.log("收起")
         this.dragDbclick(ev.target, false, this.data.contentHeight, currentBlockId.holder);
      
       } else {
         // 展开
         outside.style.maxHeight = 'none';
-        this.removeDragBack();
         this.data.unfold = true;
-        console.log("展开")
         this.dragDbclick(ev.target, true);
        
       }
@@ -863,10 +861,16 @@ export default class CodeTool {
       })
     })
 
-  console.log(this.data.unfold)
-    // 是否展开
-    if(!this.data.unfold){
+    console.log(this.data.unfold,this.nodes.outside.clientHeight, this.nodes.div.clientHeight)
+    // 没展开,
+    if(!this.data.unfold && ((this.nodes.outside.clientHeight) < this.nodes.div.clientHeight)){
+      this.addMask();
       this.addDragBack();
+    }
+
+    if((this.nodes.outside.clientHeight > this.nodes.div.clientHeight)){
+      this.removeDragBack();
+      this.removeMask();
     }
     this.TextAreaWrap.MaxHeight = this.nodes.div.clientHeight;
     this.createLine(this.TextAreaWrap.MaxHeight);
@@ -1018,12 +1022,21 @@ export default class CodeTool {
   addDragBack(){
     if(!this.nodes.outside_container.contains(this.nodes.dragBack)){
       this.nodes.outside_container.appendChild(this.nodes.dragBack);
-      this.nodes.outside.classList.add('mask');
     }
   }
   removeDragBack(){
     if(this.nodes.outside_container.contains(this.nodes.dragBack)){
       this.nodes.outside_container.removeChild(this.nodes.dragBack);
+    }
+  }
+  addMask(){
+    if(!this.nodes.outside.classList.contains('mask')){
+      this.nodes.outside.classList.add('mask');
+    }
+  }
+
+  removeMask(){
+    if(this.nodes.outside.classList.contains('mask')){
       this.nodes.outside.classList.remove('mask');
     }
   }
