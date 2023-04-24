@@ -868,9 +868,10 @@ export default class CodeTool {
       this.addDragBack();
     }
     this.TextAreaWrap.MaxHeight = this.nodes.div.clientHeight;
+    this.createLine();
     this.setLineNumbers(this.nodes.div.textContent);
     this.setLineNumbersHeight();
-    this.createLine();
+    this.createLine()
   }
 
   languageMenuClick(event) {
