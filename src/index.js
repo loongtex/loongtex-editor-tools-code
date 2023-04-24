@@ -186,15 +186,38 @@ export default class CodeTool {
     this.nodes.drag = drag;
     this.nodes.dragBack = dragBack;
 
-    // 需要折叠就加上折叠条
-    console.log(this.data.contentHeight , this.data.lineNumber)
-    if (!this.data.unfold && ((this.data.contentHeight - 40) < this.data.lineNumber) && this.data.contentHeight !== 0) {
-       this.addMask();
+    // 当是开始生成一个code时
+    if(this.data.contentHeight === 0){
+      this.removeDragBack();
+      this.removeMask()
     }
 
-    if( ((this.data.contentHeight - 40) <= this.data.lineNumber) && this.data.contentHeight !== 0){
-      this.addDragBack();
+    if(this.data.contentHeight > 0){
+      // 说明是已经生成了代码的大致内容了
+      // 如果设置了展开
+      if(this.data.unfold){
+          this.removeMask();
+      }
+
+      // 没有设置展开
+
+      if(!this.data.unfold){
+        // 看代码是不是超出范围了
+        if((this.data.contentHeight - 40)< this.data.lineNumber){
+          this.addMask();
+        }
+
+        if((this.data.contentHeight - 40) >= this.data.lineNumber){
+          this.removeMask()
+        }
+      }
+
+      // 看是不是要生成拖拽条
+      if(this.data.lineNumber > 440){
+        this.addDragBack();
+      }
     }
+   
 
     dragBack.addEventListener('dblclick', (ev) => {
       const currentBlock = this.api.blocks.getCurrentBlockIndex();
@@ -204,12 +227,18 @@ export default class CodeTool {
         // 收起
         outside.style.maxHeight = '440px';
         this.data.unfold = false;
+        if(!this.data.unfold && (this.nodes.outside.clientHeight < this.nodes.div.clientHeight)){
+          this.addMask();
+        }
         this.dragDbclick(ev.target, false, this.data.contentHeight, currentBlockId.holder);
      
       } else {
         // 展开
         outside.style.maxHeight = 'none';
         this.data.unfold = true;
+        if((this.nodes.outside.clientHeight >= this.nodes.div.clientHeight)){
+          this.removeMask();
+        }
         this.dragDbclick(ev.target, true);
        
       }
@@ -866,16 +895,35 @@ export default class CodeTool {
 
     console.log(this.data.unfold,this.nodes.outside.clientHeight, this.nodes.div.clientHeight)
     // 没展开,
-    if(!this.data.unfold && ((this.nodes.outside.clientHeight) < this.nodes.div.clientHeight)){
-      this.addMask();
-      this.addDragBack();
+    if(!this.data.unfold){
+     // 代码的高度要比外边高度高,说明有多余的代码
+      if( this.nodes.outside.clientHeight < this.nodes.div.clientHeight){
+        this.addMask();
+      }
+
+      // 反之,外面的高度和代码高度一样,说明没有多余的代码了
+      if(this.nodes.outside.clientHeight >= this.nodes.div.clientHeight){
+        this.removeMask();
+      }
     }
 
-    if((this.nodes.outside.clientHeight >= this.nodes.div.clientHeight)){
-      this.removeDragBack();
-      this.removeMask();
+    // 如果已经展开了,眼影就不需要了
+    if(this.data.unfold){
+       this.removeMask()
     }
+
     this.TextAreaWrap.MaxHeight = this.nodes.div.clientHeight;
+
+    // 看是不是要去掉拖拽条
+    // 如果 代码的高度大于440px,就必须要有
+    if(this.TextAreaWrap.MaxHeight > 440){
+      this.addDragBack()
+    }
+
+    if(this.TextAreaWrap.MaxHeight <= 440){
+      this.removeDragBack();
+    }
+
     this.createLine(this.TextAreaWrap.MaxHeight);
     this.setLineNumbers(this.nodes.div.textContent);
     this.setLineNumbersHeight();
@@ -1013,6 +1061,7 @@ export default class CodeTool {
 
     lineNumberSizer.innerHTML = '';
 
+    this.nodes.div.removeChild(lineNumberSizer);
     this.data.lineHeights = lineHeights;
   }
 
