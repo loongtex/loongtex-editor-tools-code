@@ -336,6 +336,7 @@ export default class CodeTool {
     this.nodes.div = inside;
     this.displayLineNumber && this.createLine();
     this.displayLineNumber && this.setLineNumbersHeight();
+    this.displayLineNumber && this.createLine();
 
     this.checkWrap();
 
@@ -917,7 +918,7 @@ export default class CodeTool {
 
   createLine(height = 0) {
     const nodeLen = this.nodes.lineNumbers.childNodes.length;
-    const vnodeLen = height === 0 ? Math.ceil(this.TextAreaWrap.MaxHeight / 22): this.data.lineHeights.length;
+    const vnodeLen = height !== 0 ? Math.ceil(this.TextAreaWrap.MaxHeight / 22): this.data.lineHeights.length;
     // 分情况
     // 如果nodelen大于vnodelen了,说明是删除
     if (nodeLen > vnodeLen) {
