@@ -98,7 +98,7 @@ export default class CodeTool {
       contentHeight: data.contentHeight || 0,
       title: data.title,
       word_wrap: typeof data.word_wrap === Boolean ? data.word_wrap : config.word_wrap,
-      lineHeights: data.lineHeights || [],
+      lineHeights: typeof data.lineHeights !== 'undefined' ? data.lineHeights : [],
       unfold: typeof data.unfold !== 'undefined' ? data.unfold : config.unfold,
     };
 
@@ -393,8 +393,8 @@ export default class CodeTool {
       this.displayLineNumber = !this.displayLineNumber;
 
       if (this.displayLineNumber) {
-        this.createLine();
         this.setLineNumbersHeight();
+        this.createLine();
       } else {
         this.nodes.outside.style.paddingLeft = this.config.minWidth + 'px';
         this.removeLine();
@@ -867,9 +867,10 @@ export default class CodeTool {
     if(!this.data.unfold){
       this.addDragBack();
     }
-    this.createLine();
+    this.TextAreaWrap.MaxHeight = this.nodes.div.clientHeight;
     this.setLineNumbers(this.nodes.div.textContent);
     this.setLineNumbersHeight();
+    this.createLine();
   }
 
   languageMenuClick(event) {
@@ -915,7 +916,7 @@ export default class CodeTool {
 
   createLine() {
     const nodeLen = this.nodes.lineNumbers.childNodes.length;
-    const vnodeLen = Math.ceil(this.TextAreaWrap.MaxHeight / 22)
+    const vnodeLen = this.data.lineHeights.length === 0 ? Math.ceil(this.TextAreaWrap.MaxHeight / 22): this.data.lineHeights.length;
     // 分情况
     // 如果nodelen大于vnodelen了,说明是删除
     if (nodeLen > vnodeLen) {
@@ -1016,7 +1017,6 @@ export default class CodeTool {
     if(!this.nodes.outside_container.contains(this.nodes.dragBack)){
       this.nodes.outside_container.appendChild(this.nodes.dragBack);
       this.nodes.outside.classList.add('mask');
-
     }
   }
   removeDragBack(){
