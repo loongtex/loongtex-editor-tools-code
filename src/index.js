@@ -219,29 +219,38 @@ export default class CodeTool {
     }
    
 
-    dragBack.addEventListener('dblclick', (ev) => {
-      const currentBlock = this.api.blocks.getCurrentBlockIndex();
-      const currentBlockId = this.api.blocks.getBlockByIndex(currentBlock);
-
-      if (outside.style.maxHeight === 'none') {
-        // 收起
-        outside.style.maxHeight = '440px';
-        this.data.unfold = false;
-        if(!this.data.unfold && (this.nodes.outside.clientHeight < this.nodes.div.clientHeight)){
-          this.addMask();
-        }
-        this.dragDbclick(ev.target, false, this.data.contentHeight, currentBlockId.holder);
-     
-      } else {
-        // 展开
-        outside.style.maxHeight = 'none';
-        this.data.unfold = true;
-        if((this.nodes.outside.clientHeight >= this.nodes.div.clientHeight)){
-          this.removeMask();
-        }
-        this.dragDbclick(ev.target, true);
+    let clickNumber  = 0;
+    dragBack.addEventListener('click', (ev) => {
+      clickNumber+=1;
+      if(clickNumber === 2){
+        clickNumber = 0;
+        const currentBlock = this.api.blocks.getCurrentBlockIndex();
+        const currentBlockId = this.api.blocks.getBlockByIndex(currentBlock);
+  
+        if (outside.style.maxHeight === 'none') {
+          // 收起
+          outside.style.maxHeight = '440px';
+          this.data.unfold = false;
+          if(!this.data.unfold && (this.nodes.outside.clientHeight < this.nodes.div.clientHeight)){
+            this.addMask();
+          }
+          this.dragDbclick(ev.target, false, this.data.contentHeight, currentBlockId.holder);
        
+        } else {
+          // 展开
+          outside.style.maxHeight = 'none';
+          this.data.unfold = true;
+          if((this.nodes.outside.clientHeight >= this.nodes.div.clientHeight)){
+            this.removeMask();
+          }
+          this.dragDbclick(ev.target, true);
+         
+        }
+  
+        ev.stopPropagation();
+        ev.preventDefault();
       }
+     
 
       // 当前点击的元素,是否展开
     })
