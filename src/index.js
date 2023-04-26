@@ -234,7 +234,7 @@ export default class CodeTool {
           if(!this.data.unfold && (this.nodes.outside.clientHeight < this.nodes.div.clientHeight)){
             this.addMask();
           }
-          this.dragDbclick(ev.target, false, this.data.contentHeight, currentBlockId.holder);
+          // this.dragDbclick(ev.target, false, this.data.contentHeight, currentBlockId.holder);
        
         } else {
           // 展开
@@ -243,14 +243,16 @@ export default class CodeTool {
           if((this.nodes.outside.clientHeight >= this.nodes.div.clientHeight)){
             this.removeMask();
           }
-          this.dragDbclick(ev.target, true);
+          // this.dragDbclick(ev.target, true);
          
         }
   
-        ev.stopPropagation();
-        ev.preventDefault();
+        
       }
-     
+      ev.stopPropagation();
+      ev.preventDefault();
+      // 取消选择文本
+      window.getSelection().removeAllRanges();
 
       // 当前点击的元素,是否展开
     })
