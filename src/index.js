@@ -220,6 +220,7 @@ export default class CodeTool {
    
 
     let clickNumber  = 0;
+    let timer = null;
     dragBack.addEventListener('click', (ev) => {
       clickNumber+=1;
       if(clickNumber === 2){
@@ -249,6 +250,10 @@ export default class CodeTool {
   
         
       }
+    timer =  setTimeout(()=>{
+         clickNumber = 0;
+         clearTimeout(timer)
+      },1000 )
       ev.stopPropagation();
       ev.preventDefault();
       // 取消选择文本
