@@ -455,7 +455,7 @@ export default class CodeTool {
       selectLangueMenu = this.make('div', 'code-plus-select-language-menu'),
       codeTitle = this.make('input', 'code-plus-title'),
       languageMenu = this.make('div', 'code-plus-language-menu'),
-      languageItem = this.make('div', 'code-plus-language-item'),
+      languageItem = this.make('div', ['code-plus-language-item', this.readOnly ? '' : 'is-hover']),
       languageText = this.make('span'),
       languageOutside = this.make('div', 'code-plus-language-outside'),
       languageOptions = this.make('div', 'code-plus-language-options'),
@@ -542,7 +542,10 @@ export default class CodeTool {
     this.nodes.languageText = languageText;
     languageItem.appendChild(languageText);
     svg.innerHTML = select;
-    languageItem.appendChild(svg);
+
+    if(!this.readOnly){
+      languageItem.appendChild(svg);
+    }
 
     const fragment = document.createDocumentFragment();
 
@@ -579,6 +582,9 @@ export default class CodeTool {
     codeTitle.placeholder = '请输入代码名称';
     codeTitle.spellcheck = false;
     codeTitle.value = this.data.title || '';
+    if(this.readOnly) {
+      codeTitle.setAttribute('readonly', true)
+    }
     codeTitle.addEventListener('keydown', (event) => {
       // 判断是否按下了回车键
       if (event.key === 'Enter') {
@@ -939,6 +945,7 @@ export default class CodeTool {
   }
 
   languageMenuClick(event) {
+    if(this.readOnly) return
     const { bottom, left } = event.target.getBoundingClientRect();
     if (!document.body.contains(this.nodes.languageOutside)) {
       document.body.appendChild(this.nodes.languageOutside);
