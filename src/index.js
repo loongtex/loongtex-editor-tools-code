@@ -375,7 +375,6 @@ export default class CodeTool {
     this.nodes.div = inside;
     this.displayLineNumber && this.createLine();
     this.displayLineNumber && this.setLineNumbersHeight();
-    this.displayLineNumber && this.createLine();
 
     this.checkWrap();
 
