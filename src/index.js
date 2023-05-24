@@ -901,6 +901,7 @@ export default class CodeTool {
     }
 
     getFrontOffset(this.nodes.div, endContainer, inset, (totalOffset, textContext) => {
+      console.log('textContent',JSON.stringify(textContext))
       if (this.nodes.languageText.textContent === '纯文本') {
         this.nodes.div.textContent = textContext;
       } else {
