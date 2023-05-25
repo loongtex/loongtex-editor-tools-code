@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@calumk/editorjs-nested-checklist@latest"></script> -->
+    <script src="./dist/bundle.js"></script>
+    <!-- <link rel="stylesheet" href="./css/index.css"> -->
+    <style>
+        body {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* "prebuild": "npm version patch",
+    "postbuild": "npm publish", */
+
+        #editorjs {
+            /* margin-top: 400px; */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="editorjs"></div>
+    <script>
+        const editor = new EditorJS({
+            /** 
+             * Id of Element that should contain the Editor 
+             */
+            holder: 'editorjs',
+
+            /** 
+             * Available Tools list. 
+             * Pass Tool's class or Settings object for each Tool you want to use 
+             */
+            tools: {
+                code: {
+                    class: CodeTool,
+                    config: {
+                        languages: ['纯文本', 'Css', 'Python', 'Git', 'JavaScript', 'Go', 'C', 'C++', 'Rust', 'Java'],
+                        defaultLanguage: 'Python',
+                        minWidth: 40,
+                        word_wrap: true,
+                        unfold: false,
+                        dragMoveer: {
+                            dragMove({ direction, end, event, distance }) {
+                                if (!end) {
+                                    const y = event.clientY;
+                                    const height = window.innerHeight;
+                                    if (direction === 'up') {
+                                    } else {
+                                        if (y > height - 30) {
+                                            setInterval(() => {
+                                                window.scrollBy(0, distance);
+                                            }, 100)
+                                        }
+                                    }
+                                }
+                                console.log(event, direction, end);
+                            },
+                            dragDbclick(el, iszk,) {
+                                console.log(el, iszk, contentHeight, maxHeight);
+                            }
+
+                        },
+                    }
+                }
+            },
+            data: {
+                "time": 1676279858980,
+                "blocks": [
+                    {
+                        "id": "s-IbXvCx7L",
+                        "type": "code",
+                        "data": {
+                            "code": `import '../css/index.css';
+import '../css/prism.css';
+import { _getFrontOffset, selection, _getRealDomAndOffset } from './utils/string';
+import successcopy from '../svg/deal.svg';
+import select from '../svg/select.svg';import '../css/index.css';
+import '../css/prism.css';
+import { _getFrontOffset, selection, _getRealDomAndOffset } from './utils/string';
+import successcopy from '../svg/deal.svg';
+import select from '../svg/select.svg';import '../css/index.css';
+import '../css/prism.css';
+import { _getFrontOffset, selection, _getRealDomAndOffset } from './utils/string';
+import successcopy from '../svg/deal.svg';
+import select from '../svg/select.svg';import '../css/index.css';
+import '../css/prism.css';
+import { _getFrontOffset, selection, _getRealDomAndOffset } from './utils/string';
+import successcopy from '../svg/deal.svg';
+import select from '../svg/select.svg';import '../css/index.css';
+import '../css/prism.css';
+import { _getFrontOffset, selection, _getRealDomAndOffset } from './utils/string';
+import successcopy from '../svg/deal.svg';
+import select from '../svg/select.svg';import '../css/index.css';
+import '../css/prism.css';
+import { _getFrontOffset, selection, _getRealDomAndOffset } from './utils/string';
+import successcopy from '../svg/deal.svg';
+import select from '../svg/select.svg';import '../css/index.css';
+import '../css/prism.css';
+import { _getFrontOffset, selection, _getRealDomAndOffset } from './utils/string';
+import successcopy from '../svg/deal.svg';
+import select from '../svg/select.svg';`,
+                            "language": "Css",
+                            "lineNumber": 880,
+                            "title": "代码片段",
+                            "word_wrap": true,
+                            "contentHeight": 900
+                        }
+                    }
+                ],
+                "version": "2.26.0"
+            },
+            onChange: (api, event) => {
+                editor.save().then((output) => {
+                    console.log(output)
+                })
+            }
+        })
+        console.log(editor)
+
+        if (editor) {
+
+        }
+
+
+    </script>
+</body>
+
+</html>
