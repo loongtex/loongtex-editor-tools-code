@@ -98,7 +98,8 @@ export default class CodeTool {
       contentHeight: data.contentHeight || 0,
       title: data.title,
       word_wrap: typeof data.word_wrap === Boolean ? data.word_wrap : config.word_wrap,
-      lineHeights: data.lineHeights || [],
+      lineHeights: typeof data.lineHeights !== 'undefined' ? data.lineHeights : [],
+      unfold: typeof data.unfold !== 'undefined' ? data.unfold : config.unfold,
     };
 
     this.languages = config.languages || this.defaultLanguages();
@@ -170,6 +171,12 @@ export default class CodeTool {
 
 
     this.nodes.outside = outside;
+
+    console.log(this.data.unfold)
+    // 是否展开
+    if(this.data.unfold){
+      outside.style.maxHeight = 'none';
+    }
     outside_container.appendChild(outside);
 
 
@@ -178,137 +185,191 @@ export default class CodeTool {
 
     this.nodes.drag = drag;
     this.nodes.dragBack = dragBack;
-    if (this.TextAreaWrap.MaxHeight > this.TextAreaWrap.MinHeight) {
-      outside_container.appendChild(dragBack);
 
+    // 当是开始生成一个code时
+    if(this.data.contentHeight === 0){
+      this.removeDragBack();
+      this.removeMask()
     }
 
-    dragBack.addEventListener('dblclick', (ev) => {
-      const currentBlock = this.api.blocks.getCurrentBlockIndex();
-      const currentBlockId = this.api.blocks.getBlockByIndex(currentBlock);
-
-      if (outside.style.maxHeight === 'none') {
-        // 收起
-        outside.style.maxHeight = '440px';
-        this.dragDbclick(ev.target, false, this.data.contentHeight, currentBlockId.holder);
-
-      } else {
-        // 展开
-        outside.style.maxHeight = 'none';
-        this.dragDbclick(ev.target, true);
+    if(this.data.contentHeight > 0){
+      // 说明是已经生成了代码的大致内容了
+      // 如果设置了展开
+      if(this.data.unfold){
+          this.removeMask();
       }
+
+      // 没有设置展开
+
+      if(!this.data.unfold){
+        // 看代码是不是超出范围了
+        if((this.data.contentHeight - 40)< this.data.lineNumber){
+          this.addMask();
+        }
+
+        if((this.data.contentHeight - 40) >= this.data.lineNumber){
+          this.removeMask()
+        }
+      }
+
+      // 看是不是要生成拖拽条
+      if(this.data.lineNumber > 440){
+        this.addDragBack();
+      }
+    }
+   
+
+    let clickNumber  = 0;
+    let timer = null;
+    dragBack.addEventListener('click', (ev) => {
+      clickNumber+=1;
+      if(clickNumber === 2){
+        clickNumber = 0;
+        const currentBlock = this.api.blocks.getCurrentBlockIndex();
+        const currentBlockId = this.api.blocks.getBlockByIndex(currentBlock);
+  
+        if (outside.style.maxHeight === 'none') {
+          // 收起
+          outside.style.maxHeight = '440px';
+          this.data.unfold = false;
+          if(!this.data.unfold && (this.nodes.outside.clientHeight < this.nodes.div.clientHeight)){
+            this.addMask();
+          }
+          // this.dragDbclick(ev.target, false, this.data.contentHeight, currentBlockId.holder);
+       
+        } else {
+          // 展开
+          outside.style.maxHeight = 'none';
+          this.data.unfold = true;
+          if((this.nodes.outside.clientHeight >= this.nodes.div.clientHeight)){
+            this.removeMask();
+          }
+          // this.dragDbclick(ev.target, true);
+         
+        }
+  
+        
+      }
+    timer =  setTimeout(()=>{
+         clickNumber = 0;
+         clearTimeout(timer)
+      },1000 )
+      ev.stopPropagation();
+      ev.preventDefault();
+      // 取消选择文本
+      window.getSelection().removeAllRanges();
 
       // 当前点击的元素,是否展开
     })
 
-    dragBack.addEventListener('mousedown', (ev) => {
-      document.onselectstart = () => false;
-      document.ondragstart = () => false;
+    // dragBack.addEventListener('mousedown', (ev) => {
+    //   document.onselectstart = () => false;
+    //   document.ondragstart = () => false;
 
-      this.dragState = {
-        // 鼠标开始移动的位置（Y轴）
-        'startMouseTop': ev.clientY,
-        // 鼠标最后移动的位置（Y轴）
-        'endMouseTop': ev.clientY
-      }
+    //   this.dragState = {
+    //     // 鼠标开始移动的位置（Y轴）
+    //     'startMouseTop': ev.clientY,
+    //     // 鼠标最后移动的位置（Y轴）
+    //     'endMouseTop': ev.clientY
+    //   }
 
-      ev.target.style.cursor = 'ns-resize'
+    //   ev.target.style.cursor = 'ns-resize'
 
-      // 绑定鼠标移动事件
-      document.addEventListener('mousemove', handleMouseMove);
-      // 绑定鼠标放开事件
-      document.addEventListener('mouseup', handleMouseUp);
+    //   // 绑定鼠标移动事件
+    //   document.addEventListener('mousemove', handleMouseMove);
+    //   // 绑定鼠标放开事件
+    //   document.addEventListener('mouseup', handleMouseUp);
 
-    })
+    // })
 
-    const that = this
-    function handleMouseMove(event) {
-      const rResizeLine = that.nodes.dragBack;
-      const rTextareaWrap = outside;
-      const TextAreaWrap = that.TextAreaWrap;
+    // const that = this
+    // function handleMouseMove(event) {
+    //   const rResizeLine = that.nodes.dragBack;
+    //   const rTextareaWrap = outside;
+    //   const TextAreaWrap = that.TextAreaWrap;
 
-      // 获取鼠标最后移动的位置（Y轴）
-      const { endMouseTop } = that.dragState;
-      // 获取当前的文本框高度
-      const oldTextAreaHeight = rTextareaWrap.getBoundingClientRect().height;
-      // 新的文本框高度
-      let newTextAreaHeight = 0;
+    //   // 获取鼠标最后移动的位置（Y轴）
+    //   const { endMouseTop } = that.dragState;
+    //   // 获取当前的文本框高度
+    //   const oldTextAreaHeight = rTextareaWrap.getBoundingClientRect().height;
+    //   // 新的文本框高度
+    //   let newTextAreaHeight = 0;
 
-      // 计算鼠标移动的距离
-      const distance = Math.abs(
-        parseInt(((endMouseTop - event.clientY) * 100).toString(), 10) / 100
-      );
+    //   // 计算鼠标移动的距离
+    //   const distance = Math.abs(
+    //     parseInt(((endMouseTop - event.clientY) * 100).toString(), 10) / 100
+    //   );
 
-      // 若鼠标向下移动
-      if (endMouseTop <= event.clientY) {
-        // 发送框高度达到最大
-        if (oldTextAreaHeight >= (TextAreaWrap.MaxHeight + 40)) {
-          that.dragMove({ direction: 'down', end: true, event, distance: 0 })
+    //   // 若鼠标向下移动
+    //   if (endMouseTop <= event.clientY) {
+    //     // 发送框高度达到最大
+    //     if (oldTextAreaHeight >= (TextAreaWrap.MaxHeight + 40)) {
+    //       that.dragMove({ direction: 'down', end: true, event, distance: 0 })
 
-          // 修改光标为可被向上移动
-          rResizeLine.style.cursor = 'n-resize';
+    //       // 修改光标为可被向上移动
+    //       rResizeLine.style.cursor = 'n-resize';
 
-          that.nodes.dragBack.style.backgroundImage = 'none';
-          return false;
-        }
+    //       that.nodes.dragBack.style.backgroundImage = 'none';
+    //       return false;
+    //     }
 
-        // 计算新的发送框高度
-        newTextAreaHeight = oldTextAreaHeight + distance;
+    //     // 计算新的发送框高度
+    //     newTextAreaHeight = oldTextAreaHeight + distance;
 
-        // 触发
-        that.dragMove({ direction: 'down', end: false, event, distance })
-      }
-      // 若鼠标向上移动
-      else {
+    //     // 触发
+    //     that.dragMove({ direction: 'down', end: false, event, distance })
+    //   }
+    //   // 若鼠标向上移动
+    //   else {
 
-        // 发送框高度达到最小
-        if (oldTextAreaHeight <= TextAreaWrap.MinHeight) {
-          that.dragMove({ direction: 'up', end: true, event, distance: 0 })
+    //     // 发送框高度达到最小
+    //     if (oldTextAreaHeight <= TextAreaWrap.MinHeight) {
+    //       that.dragMove({ direction: 'up', end: true, event, distance: 0 })
 
-          // 修改光标为可被向下移动
-          rResizeLine.style.cursor = 's-resize';
-          return false;
-        }
+    //       // 修改光标为可被向下移动
+    //       rResizeLine.style.cursor = 's-resize';
+    //       return false;
+    //     }
 
-        // that.nodes.dragBack.style.backgroundImage = 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))'
+    //     // that.nodes.dragBack.style.backgroundImage = 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))'
 
-        // 计算新的发送框高度
-        newTextAreaHeight = oldTextAreaHeight - distance;
+    //     // 计算新的发送框高度
+    //     newTextAreaHeight = oldTextAreaHeight - distance;
 
-        // 触发
-        that.dragMove({ direction: 'up', end: false, event, distance })
+    //     // 触发
+    //     that.dragMove({ direction: 'up', end: false, event, distance })
 
-      }
+    //   }
 
-      // 兼容鼠标快速拖动的情况：新的发送框高度不能超过最大值
-      // if (newTextAreaHeight > TextAreaWrap.MaxHeight) {
-      //   newTextAreaHeight = TextAreaWrap.MaxHeight;
-      // }
+    //   // 兼容鼠标快速拖动的情况：新的发送框高度不能超过最大值
+    //   // if (newTextAreaHeight > TextAreaWrap.MaxHeight) {
+    //   //   newTextAreaHeight = TextAreaWrap.MaxHeight;
+    //   // }
 
-      // // 兼容鼠标快速拖动的情况：新的发送框高度不能小于最小值
-      // if (newTextAreaHeight < TextAreaWrap.MinHeight) {
-      //   newTextAreaHeight = TextAreaWrap.MinHeight;
-      // }
+    //   // // 兼容鼠标快速拖动的情况：新的发送框高度不能小于最小值
+    //   // if (newTextAreaHeight < TextAreaWrap.MinHeight) {
+    //   //   newTextAreaHeight = TextAreaWrap.MinHeight;
+    //   // }
 
-      // 修改发送框高度
-      rTextareaWrap.style.maxHeight = newTextAreaHeight + 'px';
-      // 修改光标为可移动
-      rResizeLine.style.cursor = 'ns-resize';
+    //   // 修改发送框高度
+    //   rTextareaWrap.style.maxHeight = newTextAreaHeight + 'px';
+    //   // 修改光标为可移动
+    //   rResizeLine.style.cursor = 'ns-resize';
 
-      // 更新鼠标最后移动的位置（Y轴）
-      that.dragState.endMouseTop = event.clientY;
-    }
-    function handleMouseUp(event) {
-      that.dragMove({ direction: '', end: true, event });
-      // 移除鼠标移动事件
-      document.removeEventListener('mousemove', handleMouseMove);
-      // 移除鼠标放开事件
-      document.removeEventListener('mouseup', handleMouseUp);
-      // 允许用户选择网页中文字
-      document.onselectstart = null;
-      // 允许用户拖动元素
-      document.ondragstart = null;
-    }
+    //   // 更新鼠标最后移动的位置（Y轴）
+    //   that.dragState.endMouseTop = event.clientY;
+    // }
+    // function handleMouseUp(event) {
+    //   that.dragMove({ direction: '', end: true, event });
+    //   // 移除鼠标移动事件
+    //   document.removeEventListener('mousemove', handleMouseMove);
+    //   // 移除鼠标放开事件
+    //   document.removeEventListener('mouseup', handleMouseUp);
+    //   // 允许用户选择网页中文字
+    //   document.onselectstart = null;
+    //   // 允许用户拖动元素
+    //   document.ondragstart = null;
+    // }
     wrapper.appendChild(outside_container);
     inside.addEventListener("paste", (event) => this.insideInput(event, 'paste'));
     inside.addEventListener("input", (event) => this.insideInput(event, 'input'));
@@ -378,8 +439,8 @@ export default class CodeTool {
       this.displayLineNumber = !this.displayLineNumber;
 
       if (this.displayLineNumber) {
-        this.createLine();
         this.setLineNumbersHeight();
+        this.createLine();
       } else {
         this.nodes.outside.style.paddingLeft = this.config.minWidth + 'px';
         this.removeLine();
@@ -401,7 +462,7 @@ export default class CodeTool {
       selectLangueMenu = this.make('div', 'code-plus-select-language-menu'),
       codeTitle = this.make('input', 'code-plus-title'),
       languageMenu = this.make('div', 'code-plus-language-menu'),
-      languageItem = this.make('div', 'code-plus-language-item'),
+      languageItem = this.make('div', ['code-plus-language-item', this.readOnly ? '' : 'is-hover']),
       languageText = this.make('span'),
       languageOutside = this.make('div', 'code-plus-language-outside'),
       languageOptions = this.make('div', 'code-plus-language-options'),
@@ -488,7 +549,10 @@ export default class CodeTool {
     this.nodes.languageText = languageText;
     languageItem.appendChild(languageText);
     svg.innerHTML = select;
-    languageItem.appendChild(svg);
+
+    if(!this.readOnly){
+      languageItem.appendChild(svg);
+    }
 
     const fragment = document.createDocumentFragment();
 
@@ -525,6 +589,9 @@ export default class CodeTool {
     codeTitle.placeholder = '请输入代码名称';
     codeTitle.spellcheck = false;
     codeTitle.value = this.data.title || '';
+    if(this.readOnly) {
+      codeTitle.setAttribute('readonly', true)
+    }
     codeTitle.addEventListener('keydown', (event) => {
       // 判断是否按下了回车键
       if (event.key === 'Enter') {
@@ -671,10 +738,11 @@ export default class CodeTool {
       language: codeWrapper.querySelector('.code-plus-language-item').textContent,
       lineNumber: Math.floor(codeWrapper.querySelector('.cdx-input').clientHeight),
       width: codeWrapper.querySelector('.code-plus-line-number-es').clientWidth,
-      contentHeight: codeWrapper.querySelector('.cdx-input').clientHeight,
+      contentHeight: codeWrapper.querySelector('.code-plus__outside').clientHeight,
       title: codeWrapper.querySelector('.code-plus-title').value,
       word_wrap: this.data.word_wrap,
       lineHeights: this.data.lineHeights,
+      unfold: this.data.unfold,
     };
   }
 
@@ -833,6 +901,7 @@ export default class CodeTool {
     }
 
     getFrontOffset(this.nodes.div, endContainer, inset, (totalOffset, textContext) => {
+      console.log('textContent',JSON.stringify(textContext))
       if (this.nodes.languageText.textContent === '纯文本') {
         this.nodes.div.textContent = textContext;
       } else {
@@ -846,21 +915,45 @@ export default class CodeTool {
       })
     })
 
+    console.log(this.data.unfold,this.nodes.outside.clientHeight, this.nodes.div.clientHeight)
+    // 没展开,
+    if(!this.data.unfold){
+     // 代码的高度要比外边高度高,说明有多余的代码
+      if( this.nodes.outside.clientHeight < this.nodes.div.clientHeight){
+        this.addMask();
+      }
 
-    // 是否需要展示拖条
-    if (!this.nodes.outside_container.contains(this.nodes.dragBack) && this.nodes.div.getBoundingClientRect().height > this.TextAreaWrap.MinHeight) {
-      this.nodes.outside_container.appendChild(this.nodes.dragBack)
-    } else if (this.nodes.div.getBoundingClientRect().height <= this.TextAreaWrap.MinHeight && this.nodes.outside_container.contains(this.nodes.dragBack)) {
-      this.nodes.outside_container.removeChild(this.nodes.dragBack);
+      // 反之,外面的高度和代码高度一样,说明没有多余的代码了
+      if(this.nodes.outside.clientHeight >= this.nodes.div.clientHeight){
+        this.removeMask();
+      }
     }
 
-    this.TextAreaWrap.MaxHeight = this.nodes.div.getBoundingClientRect().height;
-    this.createLine();
+    // 如果已经展开了,眼影就不需要了
+    if(this.data.unfold){
+       this.removeMask()
+    }
+
+    this.TextAreaWrap.MaxHeight = this.nodes.div.clientHeight;
+
+    // 看是不是要去掉拖拽条
+    // 如果 代码的高度大于440px,就必须要有
+    if(this.TextAreaWrap.MaxHeight > 440){
+      this.addDragBack()
+    }
+
+    if(this.TextAreaWrap.MaxHeight <= 440){
+      this.removeDragBack();
+    }
+
+    this.createLine(this.TextAreaWrap.MaxHeight);
     this.setLineNumbers(this.nodes.div.textContent);
     this.setLineNumbersHeight();
+    this.createLine()
   }
 
   languageMenuClick(event) {
+    if(this.readOnly) return
     const { bottom, left } = event.target.getBoundingClientRect();
     if (!document.body.contains(this.nodes.languageOutside)) {
       document.body.appendChild(this.nodes.languageOutside);
@@ -901,9 +994,9 @@ export default class CodeTool {
     // }
   }
 
-  createLine() {
+  createLine(height = 0) {
     const nodeLen = this.nodes.lineNumbers.childNodes.length;
-    const vnodeLen = Math.ceil(this.TextAreaWrap.MaxHeight / 22)
+    const vnodeLen = height !== 0 ? Math.ceil(this.TextAreaWrap.MaxHeight / 22): this.data.lineHeights.length;
     // 分情况
     // 如果nodelen大于vnodelen了,说明是删除
     if (nodeLen > vnodeLen) {
@@ -991,6 +1084,7 @@ export default class CodeTool {
 
     lineNumberSizer.innerHTML = '';
 
+    this.nodes.div.removeChild(lineNumberSizer);
     this.data.lineHeights = lineHeights;
   }
 
@@ -1000,4 +1094,25 @@ export default class CodeTool {
     })
   }
 
+  addDragBack(){
+    if(!this.nodes.outside_container.contains(this.nodes.dragBack)){
+      this.nodes.outside_container.appendChild(this.nodes.dragBack);
+    }
+  }
+  removeDragBack(){
+    if(this.nodes.outside_container.contains(this.nodes.dragBack)){
+      this.nodes.outside_container.removeChild(this.nodes.dragBack);
+    }
+  }
+  addMask(){
+    if(!this.nodes.outside.classList.contains('mask')){
+      this.nodes.outside.classList.add('mask');
+    }
+  }
+
+  removeMask(){
+    if(this.nodes.outside.classList.contains('mask')){
+      this.nodes.outside.classList.remove('mask');
+    }
+  }
 }
